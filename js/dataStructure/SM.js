@@ -1,6 +1,5 @@
 var SM = {
 
-
     _states : [],
     _edges : [],
 
@@ -47,26 +46,28 @@ var SM = {
 
         str = str.toLowerCase();    // upper case symbols accepted as well
         var currentState = this.findState('q0');    // starting state
-        var route = '';
+        var route = str + ' |';
 
         for (var i = 0; i < str.length; i++) {
             if (!util.containsStr(this.alphabet, str[i])) {
-                console.log(str[i] + ' not in alphabet of SM');
-                return;
+                route += ' Input Error: ' + str[i] + ' not in alphabet of SM';
+                break;
             }
             var outEdges = currentState.outgoingEdges;
             
             for (var e in outEdges) {    
                 if (util.containsStr(outEdges[e].symbols, str[i])) {
+                    route += currentState.name + ' -> ';
                     currentState = outEdges[e].toState;
-
-                    if (i === str.length - 1)   route += str[i]; // no arrow for last symbol
-                    else                        route += str[i] + ' -> ';
                 }
             }
         }
-        if (currentState.name === 'qf')     route += ' : Accepted';
-        if (currentState.name === 'qTrash') route += ' : NOT Accepted';
+        if (currentState.name === 'qf') {
+            route += ' ' + currentState.name + ' : Accepted';
+        }
+        else{
+            route += ' ' + currentState.name + ' : NOT Accepted';
+        }
 
         console.log(route);
     }
@@ -92,6 +93,7 @@ SM.generateEdge(SM.findState('q2'), SM.findState('qf'), ['a', 'b']);
 // Trash state
 SM.generateState('qTrash', false, false);
 SM.generateEdge(SM.findState('qf'), SM.findState('qTrash'), ['a', 'b']);
+SM.generateEdge(SM.findState('qTrash'), SM.findState('qTrash'), ['a', 'b']);
 
 // Accepted
 SM.evalString('aa');
@@ -103,6 +105,20 @@ SM.evalString('AB');
 // NOT Accepted
 SM.evalString('aaa');
 SM.evalString('bab');
+SM.evalString('aaaaaaa');
 
 // Wrong input
 SM.evalString('ac');
+
+
+/*
+aa |q0 -> q1 ->  qf : Accepted
+ab |q0 -> q1 ->  qf : Accepted
+ba |q0 -> q2 ->  qf : Accepted
+bb |q0 -> q2 ->  qf : Accepted
+ab |q0 -> q1 ->  qf : Accepted
+aaa |q0 -> q1 -> qf ->  qTrash : NOT Accepted
+bab |q0 -> q2 -> qf ->  qTrash : NOT Accepted
+aaaaaaa |q0 -> q1 -> qf -> qTrash -> qTrash -> qTrash -> qTrash ->  qTrash : NOT Accepted
+ac |q0 ->  Input Error: c not in alphabet of SM q1 : NOT Accepted
+*/
