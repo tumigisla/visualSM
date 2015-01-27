@@ -31,13 +31,13 @@ State.prototype.psblTrans = function(str) {
     var psblEdges = [];
     for (var i = 0; i < this.outgoingEdges.length; i++) {
         
-        var hasMatchStr = util.containsStr(this.outgoingEdges[i].symbols, str),
-            hasEmptyStr = util.containsStr(this.outgoingEdges[i].symbols, consts.EPSILON);
+        var hasMatchStr = util.contains(this.outgoingEdges[i].symbols, str),
+            hasEmptyStr = util.contains(this.outgoingEdges[i].symbols, consts.EPSILON);
 
         if (hasMatchStr)
              psblEdges.push(this.outgoingEdges[i]);
         if (hasEmptyStr)
-             psblEdges.push([this.outgoingEdges[i], consts.EPSILON]);
+             psblEdges.push([this.outgoingEdges[i], consts.EPSILON]); // FIX THIS
     }
     return psblEdges;
 };
