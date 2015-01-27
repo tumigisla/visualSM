@@ -9,6 +9,15 @@ var util = {
             }
         }
         return false;
+    },
+
+    containsIndex : function(A, i) {
+        for (var j = 0; j < A.length; j++) {
+            if (A[j] === i) {
+                return true;
+            }
+        }
+        return false;
     }
 
 };

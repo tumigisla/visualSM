@@ -30,10 +30,14 @@ function State(descr) {
 State.prototype.psblTrans = function(str) {
     var psblEdges = [];
     for (var i = 0; i < this.outgoingEdges.length; i++) {
-        // Keep edges that match str
-        if (util.containsStr(this.outgoingEdges[i].symbols, str)) {
-            psblEdges.push(this.outgoingEdges[i]);
-        }
+        
+        var hasMatchStr = util.containsStr(this.outgoingEdges[i].symbols, str),
+            hasEmptyStr = util.containsStr(this.outgoingEdges[i].symbols, consts.EPSILON);
+
+        if (hasMatchStr)
+             psblEdges.push(this.outgoingEdges[i]);
+        if (hasEmptyStr)
+             psblEdges.push([this.outgoingEdges[i], consts.EPSILON]);
     }
     return psblEdges;
 };

@@ -31,6 +31,15 @@ var SM = {
     _routes : [],
     _crntStates : [],   
 
+    // _routes.length === _routeIndexes.length
+    
+    // _routeIndexes stores the index of the input string that
+    // SM has already evaluated up to.
+
+    // inputStr[_routeIndexes[i]] has been evaluated
+    // for _routes[i]
+    _routeIndexes : [],
+
     alphabet : [],
 
     // Usage : SM._clearRoutes(str);
@@ -42,6 +51,8 @@ var SM = {
 
         this._crntStates[0] = this.findState('q0');    // starting state
         this._routes[0] = str + ' |';
+
+        this._routeIndexes[0] = 0;
     },
 
     // Usage : SM.generateState(name, start, fin);
@@ -100,27 +111,61 @@ var SM = {
         this._clearRoutes(str);  // make ready for evaluation
 
         for (var r = 0; r < this._routes.length; r++) {
-            // str[0...r] has been evaluated
-            for (var i = r; i < str.length; i++) {
+            var routeIndex = this._routeIndexes[r];
+
+            // str[0...routeIndex] has been evaluated
+            // for SM._routes[r].
+            for (var i = routeIndex; i < str.length; i++) {
                 
                 // Stop evaluating if one of the input symbols
                 // is not in the alphabet.
-                if (!this.symbolInAlphabet(str[i])) break; 
+                if (!this.symbolInAlphabet(str[i], r)) break; 
 
-                this._routes[r] += this._crntStates[r].name + ' -> ';
-                var psblEdges = this._crntStates[r].psblTrans(str[i]);       
+                var crntState = this._crntStates[r];
+
+                this._routes[r] += crntState.name + ' -> ';
+                var psblEdges = crntState.psblTrans(str[i]);       
 
                 // If the SM is non-deterministic it has to
                 // split up the routes and evaluate
                 // every possible route.
                 if (psblEdges.length > 1) {
+
+                    var epsilonIndexes = [];
+
+                    for (var j = 0; j < psblEdges.length; j++)
+                        if (psblEdges[j].length === 2) {
+                            epsilonIndexes.push(j);
+                            psblEdges[j] = psblEdges[j][0];
+                        }
+
+                    //this._routeIndexes.push(routeIndex+1);
                     this.splitRoutes(psblEdges.length,
                                      this._routes[r],
-                                     psblEdges);     
+                                     psblEdges);
+
+                    for (var j = 0; j < psblEdges.length; j++) {
+                        if (util.containsIndex(epsilonIndexes, j)) {
+                            this._routeIndexes[j] = routeIndex;
+                        }
+                        else
+                            this._routeIndexes[j] = routeIndex + 1;
+                    }
                 }
-                else { // Only one possible State to move to.
-                    this._crntStates[r] = psblEdges[0].toState;
+                else if (psblEdges.length === 1) {
+                    if (psblEdges[0].length === 2) {
+                        this._routeIndexes[r] = routeIndex;
+                        this._crntStates[r] = psblEdges[0][0].toState;
+                        --i;
+                    }
+                    else {
+                        this._routeIndexes[r] = routeIndex + 1;
+                        this._crntStates[r] = psblEdges[0].toState;
+                    }
                 }
+                else
+                    this._routes[r] += "No possible transition from " + crntState.name 
+                                        + " given input " + str[i];
             }
             this.addAcceptance(r);
         }
@@ -130,7 +175,7 @@ var SM = {
 
     // Usage : SM.splitRoutes(nr, route, psblEdges);
     // Post : SM._routes now has nr entries of route.
-    //        SM.._crntStates[r]s now has nr entries of this._crntStates[r]
+    //        SM._crntStates[r]s now has nr entries of this._crntStates[r]
     splitRoutes : function(nr, route, psblEdges) {
         
         this._routes.pop();
@@ -151,10 +196,10 @@ var SM = {
         }
     },
 
-    // Usage : SM.symbolInAlphabet(str)
+    // Usage : SM.symbolInAlphabet(str, r)
     // Post : Error msg printed if false
     // Return value : true if str is in SM.alphabet
-    symbolInAlphabet : function(str) {
+    symbolInAlphabet : function(str, r) {
         if (util.containsStr(this.alphabet, str)) {
             return true;
         }
@@ -236,7 +281,7 @@ ac |q0 ->  Input Error: c not in alphabet of SM q1 : NOT Accepted
 // NFA
 // L = (a(a + b)) + (b(a + b))
 
-// Two possible ways for (a(a + b))
+// Three possible ways for (a(a + b))
 
 SM.alphabet = ['a', 'b'];
 
@@ -244,15 +289,21 @@ SM.generateState('q0', true, false);
 SM.generateState('q1', false, false);
 SM.generateState('q2', false, false);
 SM.generateState('q3', false, false);
+SM.generateState('q4', false, false);
 SM.generateState('qf', false, true);
 
 SM.generateEdge(SM.findState('q0'), SM.findState('q1'), ['a']);
 SM.generateEdge(SM.findState('q0'), SM.findState('q2'), ['b']);
 SM.generateEdge(SM.findState('q0'), SM.findState('q3'), ['a']);
+SM.generateEdge(SM.findState('q0'), SM.findState('q4'), ['a']);
 SM.generateEdge(SM.findState('q1'), SM.findState('qf'), ['a', 'b']);
 SM.generateEdge(SM.findState('q2'), SM.findState('qf'), ['a', 'b']);
 SM.generateEdge(SM.findState('q3'), SM.findState('qf'), ['a', 'b']);
+SM.generateEdge(SM.findState('q4'), SM.findState('qf'), ['a']);
 
+SM.generateState('qEps', false, false);
+SM.generateEdge(SM.findState('q0'), SM.findState('qEps'), [consts.EPSILON]);
+SM.generateEdge(SM.findState('qEps'), SM.findState('q1'), [consts.EPSILON]);
 
 SM.evalString('aa');
 
@@ -261,4 +312,5 @@ Output from NFA above
 
 ROUTE 1 aa |q0 -> q1 ->  qf : Accepted
 ROUTE 2 aa |q0 -> q3 ->  qf : Accepted
+ROUTE 3 aa |q0 -> q4 ->  qf : Accepted
 */
