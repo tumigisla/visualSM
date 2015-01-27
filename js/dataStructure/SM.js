@@ -145,7 +145,7 @@ var SM = {
                                      psblEdges);
 
                     for (var j = 0; j < psblEdges.length; j++) {
-                        if (util.containsIndex(epsilonIndexes, j)) {
+                        if (util.contains(epsilonIndexes, j)) {
                             this._routeIndexes[j] = routeIndex;
                         }
                         else
@@ -165,7 +165,7 @@ var SM = {
                 }
                 else
                     this._routes[r] += "No possible transition from " + crntState.name 
-                                        + " given input " + str[i];
+                                        + " given input " + str[i] + ', ';
             }
             this.addAcceptance(r);
         }
@@ -200,7 +200,7 @@ var SM = {
     // Post : Error msg printed if false
     // Return value : true if str is in SM.alphabet
     symbolInAlphabet : function(str, r) {
-        if (util.containsStr(this.alphabet, str)) {
+        if (util.contains(this.alphabet, str)) {
             return true;
         }
         else {
@@ -313,4 +313,5 @@ Output from NFA above
 ROUTE 1 aa |q0 -> q1 ->  qf : Accepted
 ROUTE 2 aa |q0 -> q3 ->  qf : Accepted
 ROUTE 3 aa |q0 -> q4 ->  qf : Accepted
+ROUTE 4 aa |q0 -> qEps -> q1 -> qf -> No possible transition from qf given input a,  qf : Accepted
 */
