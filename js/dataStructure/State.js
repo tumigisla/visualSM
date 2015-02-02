@@ -1,5 +1,5 @@
 /*
- A single State in the SM.
+ A single State in a SM.
  It has a name for the Edges to recognize,
  and can be a Starting State, a Final State or
  neither of those.
@@ -24,22 +24,13 @@ function State(descr) {
 }
 
 // Usage : State.psblTrans(str);
-// Return value : An array of Edges that's
+// Return value : The Edge that's
 //                possible to move along in the transition
 //                to the new State.
 State.prototype.psblTrans = function(str) {
-    var psblEdges = [];
-    for (var i = 0; i < this.outgoingEdges.length; i++) {
-        
-        var hasMatchStr = util.containsStr(this.outgoingEdges[i].symbols, str),
-            hasEmptyStr = util.containsStr(this.outgoingEdges[i].symbols, consts.EPSILON);
-
-        if (hasMatchStr)
-             psblEdges.push(this.outgoingEdges[i]);
-        if (hasEmptyStr)
-             psblEdges.push([this.outgoingEdges[i], consts.EPSILON]);
-    }
-    return psblEdges;
+    for (var i = 0; i < this.outgoingEdges.length; i++)
+        if (util.contains(this.outgoingEdges[i].symbols, str))
+            return this.outgoingEdges[i];
 };
 
 // Usage : State.isStart();
