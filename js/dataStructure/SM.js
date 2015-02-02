@@ -77,5 +77,5 @@ SM.prototype.symbolInAlphabet = function(str) {
 // Post : st is a State.
 // Return value : true if st is a State in SM.
 SM.prototype.hasState = function(st) {
-	return (util.contains(this._states, st));
+    return (util.contains(this._states, st));
 };

@@ -27,7 +27,7 @@ var move = [];
 
 // Set each entry of alreadyOn to false.
 //for (var i = 0; i < this._states.length; i++)
-//	alreadyOn[i] = false;
+//  alreadyOn[i] = false;
 
 // Then, for each state s in epsilon-closure(s0),
 // push s onto oldStates and set alreadyOn[s] to true.
@@ -36,8 +36,8 @@ var anonFunc = function() {
 S = epsClosure(s0);
 c = nextChar();
 while (c != eof) {
-	S = epsClosure(move(S, c));
-	c = nextChar();
+    S = epsClosure(move(S, c));
+    c = nextChar();
 }
 return util.intersect(S, F) != [];
 };
@@ -51,10 +51,10 @@ return util.intersect(S, F) != [];
 // careful never to call addState on a state that
 // is already on the stack newStates.
 var addState = function(s) {
-	newStates.push(s);
-	alreadyOn[s] = true;
-	for (t in move[s, eps])
-		addState(t); // recursive call
+    newStates.push(s);
+    alreadyOn[s] = true;
+    for (t in move[s, eps])
+        addState(t); // recursive call
 };
 
 
@@ -62,28 +62,28 @@ var addState = function(s) {
 // Figure 3.33 page 154 in Dragonbook
 // T is a SM
 var epsClosure = function(T) {
-	// push all states of T onto stack
-	var stack = new Stack();
-	for (var t = 0; t < T._states.length; t++) {
-		stack.push(T._states[t]);
-		// initialize eps-closure(T) to T
-		var epsClos = T;
+    // push all states of T onto stack
+    var stack = new Stack();
+    for (var t = 0; t < T._states.length; t++) {
+        stack.push(T._states[t]);
+        // initialize eps-closure(T) to T
+        var epsClos = T;
 
-		while(!stack.isEmpty()){
-			// pop t, the top element, off stack
-			var t = stack.pop();
-			for (var e = 0; e < T._edges.length; e++) {
-				if (e.fromState === t && util.contains(T._edges.symbols, 'eps')) {
-					var u = e;
-					if (!epsClos.hasState(u)) {
-						epsClos.generateState('from'+epsClos.name, false, false);
-						stack.push(u);	
-					}
-				}	
-			}
-		}
-	}
-	console.log('HERE');
+        while(!stack.isEmpty()){
+            // pop t, the top element, off stack
+            var t = stack.pop();
+            for (var e = 0; e < T._edges.length; e++) {
+                if (e.fromState === t && util.contains(T._edges.symbols, 'eps')) {
+                    var u = e;
+                    if (!epsClos.hasState(u)) {
+                        epsClos.generateState('from'+epsClos.name, false, false);
+                        stack.push(u);  
+                    }
+                }   
+            }
+        }
+    }
+    console.log('HERE');
 };
 
 
