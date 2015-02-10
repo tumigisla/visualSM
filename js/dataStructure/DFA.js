@@ -94,7 +94,7 @@ DFA.prototype.addAcceptance = function() {
 
 // DFA
 // L = (a(a + b)) + (b(a + b))
-
+/*
 var testDfa = new DFA();
 
 testDfa.alphabet = ['a', 'b'];
@@ -128,7 +128,7 @@ testDfa.evalString('aaaaaaa');
 
 // Wrong input
 testDfa.evalString('ac');
-
+*/
 
 /*
 Output from DFA above.

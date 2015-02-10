@@ -1,3 +1,5 @@
 var consts = {
-	EPSILON : 'epsilon'
+	EPSILON : 'epsilon',
+
+	STATE_RADIUS : 25
 };
