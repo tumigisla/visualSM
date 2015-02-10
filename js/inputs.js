@@ -37,7 +37,7 @@ var inputs = {
 		if (!e.which) return; // no button being pressed
 
 		draw.circle(g_ctx, inputs.mouse.X, inputs.mouse.Y, consts.STATE_RADIUS);
-		testDFA.generateState({cx : inputs.mouse.X, cy : inputs.mouse.Y});
+		testDFA.generateState(inputs.mouse.X, inputs.mouse.Y);
 		console.log(testDFA._states);
 	},
 
@@ -45,7 +45,7 @@ var inputs = {
 		if (e.shiftKey) {
 			inputs.updateMouseCoords(e);
 
-			//findStateInRange(inputs.mouse.X, inputs.mouse.Y);
+			findStateInRange(inputs.mouse.X, inputs.mouse.Y);
 
 			g_ctx.save();
 			g_ctx.beginPath();

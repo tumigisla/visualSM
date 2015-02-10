@@ -11,6 +11,8 @@
 
 // Usage : 
 //  new State({
+//      cx   : Number,
+//      cy   : Number,
 //      name : String,
 //      start : Boolean,
 //      fin : Boolean  

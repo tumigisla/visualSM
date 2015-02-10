@@ -18,8 +18,10 @@ function SM(descr) {
 // Post : A new State with the name name and specifications
 //        whether it's a starting or a final State (or neither)
 //        has been added to _states.
-SM.prototype.generateState = function(name, start, fin) {
+SM.prototype.generateState = function(cx, cy, name, start, fin) {
     var state = new State({
+        cx : cx,
+        cy : cy,
         name : name,
         start : start,
         fin : fin
