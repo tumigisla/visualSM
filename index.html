@@ -3,12 +3,20 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>State Machine Visualization</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
+
+        <div id="wrapper">
+            <p>Stats on the machine you're currently building:</p>
+            <ul id="stats"></ul>
+        </div>
 
         <canvas id="myCanvas" width="600" height="600" style="border: 1px solid black;">
         Sorry, but your browser does not support the HTML5 canvas tag.
         </canvas>
+
+        <script src="js/jquery-1.11.2.min.js"></script>
 
         <script src="js/util.js"></script>
         <script src="js/consts.js"></script>

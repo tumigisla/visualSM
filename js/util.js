@@ -21,6 +21,30 @@ var util = {
     //          two given entities.
     distSq : function(x1, y1, x2, y2) {
         return this.square(x2-x1) + this.square(y2-y1);
+    },
+
+    // Input: chr is a String of length 1
+    // Output : true if chr is punctuation.
+    isWsp : function(chr) {
+        return chr === ' ';
+    },
+
+    // Input : str is a String.
+    // Output : An array of all the symbols.
+    //          Punctuations have been cut out.
+    extractSymbols : function(str) {
+        var s = [];
+        var w = "";
+        for(var i = 0; i <= str.length; i++){
+            if(str[i] === " " | this.isWsp(str[i]) | i === str.length){
+                if(w !== ""){
+                    s[s.length] = w;
+                    w = "";
+                }
+            }
+            else w = w + str[i];
+        }
+        return s;
     }
 
 };
