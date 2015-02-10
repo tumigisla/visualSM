@@ -23,6 +23,8 @@ function State(descr) {
     }
     this.incomingEdges = [];
     this.outgoingEdges = [];
+
+    this.radius = 25;
 }
 
 // Usage : State.psblTrans(str);
@@ -45,4 +47,13 @@ State.prototype.isStart = function() {
 // Return value : True if State is a final position.
 State.prototype.isFin = function() {
     return this.fin;
+};
+
+
+// Interaction
+
+State.prototype.update = function(du) {};
+
+State.prototype.render = function(ctx) {
+    draw.circle(ctx, this.cx, this.cy, this.radius);
 };

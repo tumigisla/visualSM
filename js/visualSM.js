@@ -2,10 +2,11 @@
 var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
 
-var g_SM = new DFA();
+var g_SM = new DFA(); // make this more general
 
-g_SM.alphabet = ['a', 'b'];
+g_SM.alphabet = ['a', 'b']; // make this more general
 
+/////////////
 
 var visualSM = {
 
@@ -31,7 +32,7 @@ var visualSM = {
         var newState = g_SM._states[g_SM._states.length - 1];
         this.addToStats(newState);
 
-        draw.circle(g_ctx, cx, cy, consts.STATE_RADIUS);
+        //draw.circle(g_ctx, cx, cy, consts.STATE_RADIUS);
     },
 
     // Pre :  x and y are canvas coords.
@@ -42,7 +43,10 @@ var visualSM = {
         var fromState = this.findStateInRange(x, y);
         g_SM.generateEdge(fromState);
 
-        draw.startEdge(g_ctx, x, y);
+        var newEdge = g_SM._edges[g_SM._edges.length - 1];
+        newEdge.updateStartCoords(x, y);
+
+        //draw.startEdge(g_ctx, x, y);
     },
 
     // Pre : x and y are canvas coords.
@@ -57,6 +61,7 @@ var visualSM = {
         var newEdge = g_SM._edges[g_SM._edges.length - 1];
         newEdge.toState = toState;
         newEdge.symbols = this.addName('edge');
+        newEdge.updateFinCoords(x, y);
         // Update the ingoing state so that it's
         // aware of it's incoming edge.
         newEdge.toState.incomingEdges.push(newEdge);
@@ -105,5 +110,24 @@ var visualSM = {
         element.appendChild(listItem);
     }
 
+};
 
+////////////
+
+var updateSimulation = function(du) {
+    var states = g_SM._states,
+        edges = g_SM._edges;
+    for (var i = 0; i < states.length; i++)
+        states[i].update(du);
+    for (var i = 0; i < edges.length; i++)
+        edges[i].update(du);
+};
+
+var renderSimulation = function(ctx) {
+    var states = g_SM._states,
+        edges = g_SM._edges;
+    for (var i = 0; i < states.length; i++)
+        states[i].render(ctx);
+    for (var i = 0; i < edges.length; i++)
+        edges[i].render(ctx);
 };
