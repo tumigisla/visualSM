@@ -2,6 +2,10 @@ var inputs = {
 
 	keys : [],
 
+	// X : mouseX
+	// Y : mouseY
+	mouse : {X : 0, Y : 0},
+
 	handleKeyDown : function(e) {
 		this.keys[e.keyCode] = true;
 	},
@@ -20,17 +24,43 @@ var inputs = {
 		return isDown;
 	},
 
+	updateMouseCoords : function(e) {
+		inputs.mouse.X = e.clientX - g_canvas.offsetLeft;
+		inputs.mouse.Y = e.clientY - g_canvas.offsetTop;
+	},
+
 	// Returns an array of length 2 containing
 	// the mouse coordinates
 	handleMouse : function(e) {
-		var mouseX = e.clientX - g_canvas.offsetLeft,
-			mouseY = e.clientY - g_canvas.offsetTop;
+		inputs.updateMouseCoords(e);
 
 		if (!e.which) return; // no button being pressed
 
-		draw.circle(g_ctx, mouseX, mouseY, consts.STATE_RADIUS);
-		testDFA.generateState();
+		draw.circle(g_ctx, inputs.mouse.X, inputs.mouse.Y, consts.STATE_RADIUS);
+		testDFA.generateState({cx : inputs.mouse.X, cy : inputs.mouse.Y});
 		console.log(testDFA._states);
+	},
+
+	mouseDown : function(e) {
+		if (e.shiftKey) {
+			inputs.updateMouseCoords(e);
+
+			//findStateInRange(inputs.mouse.X, inputs.mouse.Y);
+
+			g_ctx.save();
+			g_ctx.beginPath();
+			g_ctx.moveTo(inputs.mouse.X, inputs.mouse.Y);
+		}
+	},
+
+	mouseUp : function(e) {
+		if (e.shiftKey) {
+			inputs.updateMouseCoords(e);
+
+			g_ctx.lineTo(inputs.mouse.X, inputs.mouse.Y);
+			g_ctx.stroke();
+			g_ctx.restore();
+		}
 	}
 
 };
@@ -38,8 +68,9 @@ var inputs = {
 window.addEventListener("keydown", inputs.handleKeydown);
 window.addEventListener("keyup", inputs.handleKeyup);
 
-window.addEventListener("mousedown", inputs.handleMouse);
-//window.addEventListener("mousemove", inputs.handleMouse);
+window.addEventListener("dblclick", inputs.handleMouse);
 
-//var names = ['a', 'b', 'c', 'd', 'e', 'f'];
-//var iNames = 0;
+window.addEventListener("mousedown", inputs.mouseDown);
+window.addEventListener("mouseup", inputs.mouseUp);
+
+console.log(inputs.mouse);
