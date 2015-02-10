@@ -45,7 +45,11 @@ var inputs = {
 		if (e.shiftKey) {
 			inputs.updateMouseCoords(e);
 
-			findStateInRange(inputs.mouse.X, inputs.mouse.Y);
+			var st = findStateInRange(inputs.mouse.X, inputs.mouse.Y);
+
+			testDFA.generateEdge(st);
+
+			edgeInMaking = testDFA._edges[testDFA._edges.length - 1];
 
 			g_ctx.save();
 			g_ctx.beginPath();
@@ -56,6 +60,10 @@ var inputs = {
 	mouseUp : function(e) {
 		if (e.shiftKey) {
 			inputs.updateMouseCoords(e);
+
+			var st = findStateInRange(inputs.mouse.X, inputs.mouse.Y);
+
+			edgeInMaking.toState = st;
 
 			g_ctx.lineTo(inputs.mouse.X, inputs.mouse.Y);
 			g_ctx.stroke();
@@ -74,3 +82,5 @@ window.addEventListener("mousedown", inputs.mouseDown);
 window.addEventListener("mouseup", inputs.mouseUp);
 
 console.log(inputs.mouse);
+
+var edgeInMaking;

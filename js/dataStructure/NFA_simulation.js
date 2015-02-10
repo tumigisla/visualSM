@@ -86,7 +86,7 @@ var epsClosure = function(T) {
     console.log('HERE');
 };
 
-
+/*
 var testSim = new NFA();
 
 testSim.alphabet = ['a', 'b', 'eps'];
@@ -99,3 +99,4 @@ testSim.generateEdge(testSim.findState('q0'), testSim.findState('q1'), ['a', 'b'
 testSim.generateEdge(testSim.findState('q1'), testSim.findState('qf'), ['a', 'b']);
 
 epsClosure(testSim);
+*/

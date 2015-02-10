@@ -44,8 +44,8 @@ SM.prototype.generateEdge = function(fromState, toState, symbols) {
         
     this._edges.push(edge);
         
-    fromState.outgoingEdges.push(edge);
-    toState.incomingEdges.push(edge);
+    if (fromState) fromState.outgoingEdges.push(edge);
+    if (toState) toState.incomingEdges.push(edge);
 };
 
 // Usage : SM.findState(name);

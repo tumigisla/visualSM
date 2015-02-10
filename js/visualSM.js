@@ -10,8 +10,10 @@ testDFA.alphabet = ['a', 'b'];
 // that's close enough to the current mouse
 // coordinates.
 var findStateInRange = function(mouseX, mouseY) {
-	for (var i = 0; i < testDFA._states.length; i++) {
-		var st = testDFA._states[i];
-		console.log(util.distSq(st.cx, mouseX, st.cy, mouseY));
-	}
+    for (var i = 0; i < testDFA._states.length; i++) {
+        var st = testDFA._states[i];
+        var dist = util.distSq(st.cx, st.cy, mouseX, mouseY);
+        if (dist < consts.IN_RANGE)
+            return st;
+    }
 };
