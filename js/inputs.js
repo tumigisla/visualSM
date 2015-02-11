@@ -29,6 +29,12 @@ var inputs = {
         inputs.mouse.Y = e.clientY - g_canvas.offsetTop;
     },
 
+    handleClick : function(e) {
+        inputs.updateMouseCoords(e);
+        var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
+        if (state) state.isSelected = !state.isSelected;
+    },
+
     handleDblKlick : function(e) {
         inputs.updateMouseCoords(e);
         if (!e.which) return; // no button being pressed
@@ -55,6 +61,7 @@ var inputs = {
 window.addEventListener("keydown", inputs.handleKeydown);
 window.addEventListener("keyup", inputs.handleKeyup);
 
+window.addEventListener("click", inputs.handleClick);
 window.addEventListener("dblclick", inputs.handleDblKlick);
 window.addEventListener("mousedown", inputs.mouseDown);
 window.addEventListener("mouseup", inputs.mouseUp);

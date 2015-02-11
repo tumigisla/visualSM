@@ -3,11 +3,9 @@ var util = {
     // Find out if A contains i
     // Works for arrays and strings. 
     contains : function(A, i) {
-        for (var j = 0; j < A.length; j++) {
-            if (A[j] === i) {
+        for (var j = 0; j < A.length; j++)
+            if (A[j] === i)
                 return true;
-            }
-        }
         return false;
     },
 
@@ -21,6 +19,15 @@ var util = {
     //          two given entities.
     distSq : function(x1, y1, x2, y2) {
         return this.square(x2-x1) + this.square(y2-y1);
+    },
+
+    // Input : Mouse coords, circle coords and circle radius.
+    // Output : True if mouse cursor is inside the circle.
+    inCircle : function(mouseX, mouseY, cx, cy, rad) {
+        var pointDistSq = this.distSq(mouseX, mouseY, cx, cy);
+        var radSq = this.square(rad);
+        console.log(pointDistSq, radSq);
+        return pointDistSq < radSq;
     },
 
     // Input: chr is a String of length 1

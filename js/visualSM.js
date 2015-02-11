@@ -22,6 +22,15 @@ var visualSM = {
         }
     },
 
+    // True if mouse cursor is inside the state.
+    insideState : function(mouseX, mouseY) {
+        for (var i = 0; i < g_SM._states.length; i++) {
+            var st = g_SM._states[i];
+            var inCircle = util.inCircle(mouseX, mouseY, st.cx, st.cy, st.radius);
+            if (inCircle) return st;
+        }
+    },
+
     // Pre : cx and cy are canvas coords.
     // Post : A new state with pos (cx, cy)
     //        has been added to g_SM and

@@ -25,6 +25,7 @@ function State(descr) {
     this.outgoingEdges = [];
 
     this.radius = 25;
+    this.isSelected = false;
 }
 
 // Usage : State.psblTrans(str);
@@ -52,8 +53,10 @@ State.prototype.isFin = function() {
 
 // Interaction
 
-State.prototype.update = function(du) {};
+State.prototype.update = function(du) {
+    
+};
 
 State.prototype.render = function(ctx) {
-    draw.circle(ctx, this.cx, this.cy, this.radius);
+    draw.state(ctx, this.cx, this.cy, this.radius, this.isSelected);
 };
