@@ -6,10 +6,12 @@ var draw = {
         ctx.fillStyle = 'black';
         ctx.fill();
         if (isSelected) {
+            /*
             ctx.beginPath();
             ctx.arc(x, y, r + 3, 0, Math.PI * 2);
             ctx.strokeStyle = 'blue';
             ctx.stroke();
+            */
         }
     },
 

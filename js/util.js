@@ -26,7 +26,6 @@ var util = {
     inCircle : function(mouseX, mouseY, cx, cy, rad) {
         var pointDistSq = this.distSq(mouseX, mouseY, cx, cy);
         var radSq = this.square(rad);
-        console.log(pointDistSq, radSq);
         return pointDistSq < radSq;
     },
 

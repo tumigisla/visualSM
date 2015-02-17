@@ -62,6 +62,18 @@ SM.prototype.findState = function(name) {
     return false;
 };
 
+// Usage : SM.findStartState();
+// Return value : The starting state, if it exists.
+SM.prototype.findStartState = function() {
+    console.log('HERE');
+    for(var i in this._states) {
+        if (this._states[i].start)
+            return this._states[i];
+    }
+    console.log('No starting state defined');
+    return false;
+};
+
 // Usage : SM.symbolInAlphabet(str)
 // Post : Error msg printed if false
 // Return value : true if str is in DFA.alphabet

@@ -31,17 +31,26 @@ var visualSM = {
         }
     },
 
+    // If the mouse cursor is insede a state,
+    // move state to the current mouseX and mouseY coords.
+    maybeMoveState : function(mouseX, mouseY) {
+        var maybeState = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
+        if (maybeState) {
+            console.log(maybeState);
+            maybeState.updateCoords(inputs.mouse.X, inputs.mouse.Y);
+        }
+    },
+
     // Pre : cx and cy are canvas coords.
     // Post : A new state with pos (cx, cy)
     //        has been added to g_SM and
     //        drawn to the canvas.
     insertState : function(cx, cy) {
-        g_SM.generateState(cx, cy, this.addName('state'));
+        var attr = this.addAttr('state'); // name, isStart, isFin
+        g_SM.generateState(cx, cy, attr[0], attr[1], attr[2]);
         
         var newState = g_SM._states[g_SM._states.length - 1];
         this.addToStats(newState);
-
-        //draw.circle(g_ctx, cx, cy, consts.STATE_RADIUS);
     },
 
     // Pre :  x and y are canvas coords.
@@ -53,7 +62,8 @@ var visualSM = {
         g_SM.generateEdge(fromState);
 
         var newEdge = g_SM._edges[g_SM._edges.length - 1];
-        newEdge.updateStartCoords(x, y);
+        var clampCoords = newEdge.clampToState(x, y, fromState);
+        newEdge.updateStartCoords(clampCoords[0], clampCoords[1]);
 
         //draw.startEdge(g_ctx, x, y);
     },
@@ -69,29 +79,38 @@ var visualSM = {
 
         var newEdge = g_SM._edges[g_SM._edges.length - 1];
         newEdge.toState = toState;
-        newEdge.symbols = this.addName('edge');
-        newEdge.updateFinCoords(x, y);
+        newEdge.symbols = this.addAttr('edge');
+
+        var clampCoords = newEdge.clampToState(x, y, toState);
+        newEdge.updateFinCoords(clampCoords[0], clampCoords[1]);
+
         // Update the ingoing state so that it's
         // aware of it's incoming edge.
         newEdge.toState.incomingEdges.push(newEdge);
 
         this.addToStats(newEdge);
+     },
 
-        draw.finEdge(g_ctx, x, y);
-    },
-
-    // Give name to state/edge.
+    // Give attributes to state/edge.
     // A prompt window with a text input
     // pops up.
     // Pre : type is a String and has to be either
     //       'state' or 'edge'.
-    addName : function(type) {
-        if (type === 'state') return prompt('Enter name of ' + type);
+    addAttr : function(type) {
+        if (type === 'state') {
+            var attr = prompt('Enter name of ' + type + ' isStart isFinal seperated by whitespace');
+            attr = util.extractSymbols(attr);
+            attr[1] = attr[1] === 'true';
+            attr[2] = attr[2] === 'true';
+            return attr;
+        }
         if (type === 'edge') {
             var symbols = prompt('Enter symbols for ' + type + ' , seperated by whitespace.');
             // cut out whitespace and add symbols to the array
             return util.extractSymbols(symbols);
         }
+        if (type === 'evalStr')
+            return prompt('Enter string to evaluate');
         return;
         // TODO : deal with unnamed states or unnamed edges (empty string).
     },
@@ -112,11 +131,20 @@ var visualSM = {
             textNode = document.createTextNode('Edge' + ': ' + '[' + entity.symbols + ']'
                                                + ', ' + 'from:' +  entity.fromState.name
                                                 + ', ' + 'to:' + entity.toState.name);
+        else { // text route
+            textNode = document.createTextNode('Route: ' + entity);
+        }
 
         listItem.appendChild(textNode);
 
         var element = document.getElementById("stats");
         element.appendChild(listItem);
+    },
+
+
+    evaluate : function() {
+        var evalStr = this.addAttr('evalStr');
+        g_SM.evalString(evalStr);
     }
 
 };

@@ -55,6 +55,10 @@ var inputs = {
         }
     },
 
+    evalHandle : function() {
+        visualSM.evaluate();
+    }
+
 
 };
 
@@ -65,3 +69,5 @@ window.addEventListener("click", inputs.handleClick);
 window.addEventListener("dblclick", inputs.handleDblKlick);
 window.addEventListener("mousedown", inputs.mouseDown);
 window.addEventListener("mouseup", inputs.mouseUp);
+
+document.getElementById("evalBtn").addEventListener("click", inputs.evalHandle);

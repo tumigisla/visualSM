@@ -27,8 +27,8 @@ DFA.prototype = new SM();
 // Usage : DFA._initRoute(str);
 // Post : _routes and _crntStates have been
 //        initialized for next evaluation of a String.
-DFA.prototype._initRoute = function(str) {
-    this._crntState = this.findState('q0');    // starting state
+DFA.prototype._initRoute = function(str, startState) {
+    this._crntState = this.findState(startState.name);    // starting state
     this._route = str + ' |';
 };
 
@@ -36,9 +36,9 @@ DFA.prototype._initRoute = function(str) {
 // Return value : An array of routes the DFA takes
 //                to evaluate the input str.
 DFA.prototype.evalString = function(str) {
-
+    var startState = this.findStartState();
     str = str.toLowerCase();    // upper case symbols accepted as well
-    this._initRoute(str);  // make ready for evaluation
+    this._initRoute(str, startState);  // make ready for evaluation
 
     for (var i = 0; i < str.length; i++) {
         // Stop evaluating if one of the input symbols
@@ -56,7 +56,8 @@ DFA.prototype.evalString = function(str) {
     }
         
     this.addAcceptance();
-    this.printRoute();
+    //this.printRoute();
+    visualSM.addToStats(this._route);
 };
 
 // Usage : DFA.move(newState);
@@ -85,7 +86,7 @@ DFA.prototype.printRoute = function() {
 //        has been accepted or not by DFA has been
 //        pushed to the back of the route string.
 DFA.prototype.addAcceptance = function() {
-    if (this._crntState.name === 'qf')
+    if (this._crntState.isFin())
         this._route += ' ' + this._crntState.name + ' : Accepted';
     else
         this._route += ' ' + this._crntState.name + ' : NOT Accepted';

@@ -50,6 +50,11 @@ State.prototype.isFin = function() {
     return this.fin;
 };
 
+State.prototype.updateCoords = function(x, y) {
+    this.cx = x;
+    this.cy = y;
+};
+
 
 // Interaction
 
