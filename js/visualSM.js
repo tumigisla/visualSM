@@ -48,7 +48,7 @@ var visualSM = {
     insertState : function(cx, cy) {
         var attr = this.addAttr('state'); // name, isStart, isFin
         g_SM.generateState(cx, cy, attr[0], attr[1], attr[2]);
-        
+
         var newState = g_SM._states[g_SM._states.length - 1];
         this.addToStats(newState);
     },
@@ -64,8 +64,6 @@ var visualSM = {
         var newEdge = g_SM._edges[g_SM._edges.length - 1];
         var clampCoords = newEdge.clampToState(x, y, fromState);
         newEdge.updateStartCoords(clampCoords[0], clampCoords[1]);
-
-        //draw.startEdge(g_ctx, x, y);
     },
 
     // Pre : x and y are canvas coords.
@@ -124,10 +122,10 @@ var visualSM = {
         var listItem = document.createElement("li");
 
         var textNode;
-        if (entity.name) // then it's a State 
+        if (entity.name) // then it's a State
             textNode = document.createTextNode('State' + ': ' + entity.name + ', ' + '(' + entity.cx
                                                + ', ' + entity.cy + ')');
-        if (entity.symbols) // then it's an Edge
+        else if (entity.symbols) // then it's an Edge
             textNode = document.createTextNode('Edge' + ': ' + '[' + entity.symbols + ']'
                                                + ', ' + 'from:' +  entity.fromState.name
                                                 + ', ' + 'to:' + entity.toState.name);
@@ -160,7 +158,13 @@ var updateSimulation = function(du) {
         edges[i].update(du);
 };
 
+var g_isBuildingEdge = false;
+
 var renderSimulation = function(ctx) {
+    if (g_isBuildingEdge)
+        draw.edge(ctx, draw.edgeX1, draw.edgeY1,
+                  inputs.mouse.X, inputs.mouse.Y);
+
     var states = g_SM._states,
         edges = g_SM._edges;
     for (var i = 0; i < states.length; i++)

@@ -4,7 +4,7 @@ var main = {
 };
 
 main.iter = function(frameTime) {
-    this._updateClocks(); 
+    this._updateClocks(frameTime);
     this._iterCore(this._frameTimeDelta_ms);
     this._requestNextIteration();
 };

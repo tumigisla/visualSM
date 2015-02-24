@@ -15,6 +15,9 @@ var draw = {
         }
     },
 
+    edgeX1 : 0,
+    edgeY1 : 0,
+
     edge : function(ctx, x1, y1, x2, y2) {
         ctx.save();
         ctx.beginPath();
@@ -22,6 +25,7 @@ var draw = {
         ctx.lineTo(x2, y2);
         ctx.strokeStyle = 'black';
         ctx.stroke();
+        ctx.closePath();
         ctx.restore();
     }
 

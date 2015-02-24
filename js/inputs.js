@@ -44,16 +44,22 @@ var inputs = {
     mouseDown : function(e) {
         if (e.shiftKey) { // shift + mouseClick
             inputs.updateMouseCoords(e);
+            g_isBuildingEdge = true;
+            draw.edgeX1 = inputs.mouse.X;
+            draw.edgeY1 = inputs.mouse.Y;
             visualSM.prepareEdge(inputs.mouse.X, inputs.mouse.Y);
         }
     },
 
     mouseUp : function(e) {
         if (e.shiftKey) { // shift + mouseClick
+            g_isBuildingEdge = false;
             inputs.updateMouseCoords(e);
             visualSM.insertEdge(inputs.mouse.X, inputs.mouse.Y);
         }
     },
+
+    mouseMove : function(e) { inputs.updateMouseCoords(e); },
 
     evalHandle : function() {
         visualSM.evaluate();
@@ -69,5 +75,6 @@ window.addEventListener("click", inputs.handleClick);
 window.addEventListener("dblclick", inputs.handleDblKlick);
 window.addEventListener("mousedown", inputs.mouseDown);
 window.addEventListener("mouseup", inputs.mouseUp);
+window.addEventListener("mousemove", inputs.mouseMove);
 
 document.getElementById("evalBtn").addEventListener("click", inputs.evalHandle);

@@ -6,7 +6,7 @@
 
 function SM(descr) {
 
-    this._states = [];       
+    this._states = [];
     this._edges = [];
 
     this.alphabet = [];
@@ -41,9 +41,9 @@ SM.prototype.generateEdge = function(fromState, toState, symbols) {
         toState : toState,
         symbols : symbols
     });
-        
+
     this._edges.push(edge);
-        
+
     if (fromState) fromState.outgoingEdges.push(edge);
     if (toState) toState.incomingEdges.push(edge);
 };
@@ -65,7 +65,6 @@ SM.prototype.findState = function(name) {
 // Usage : SM.findStartState();
 // Return value : The starting state, if it exists.
 SM.prototype.findStartState = function() {
-    console.log('HERE');
     for(var i in this._states) {
         if (this._states[i].start)
             return this._states[i];
