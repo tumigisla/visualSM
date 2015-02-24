@@ -201,7 +201,8 @@ var renderSimulation = function(ctx) {
 
     if (shouldRenderRoute) {
         var coords = routePoints.pop();
-        draw.routeCircle(g_ctx, coords.x, coords.y);
+        if (coords)
+            draw.routeCircle(g_ctx, coords.x, coords.y);
     }
     // draw.routeCircle(g_ctx, 100, 100);
 };
