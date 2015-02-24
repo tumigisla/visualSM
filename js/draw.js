@@ -24,6 +24,7 @@ var draw = {
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;    
         ctx.stroke();
         ctx.closePath();
         ctx.restore();

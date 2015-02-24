@@ -1,4 +1,4 @@
-// Get handler for canvas and define the context
+    // Get handler for canvas and define the context
 var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
 
@@ -96,14 +96,14 @@ var visualSM = {
     //       'state' or 'edge'.
     addAttr : function(type) {
         if (type === 'state') {
-            var attr = prompt('Enter name of ' + type + ' isStart isFinal seperated by whitespace');
+            var attr = prompt(type + 'Name isStart isFinal');
             attr = util.extractSymbols(attr);
             attr[1] = attr[1] === 'true';
             attr[2] = attr[2] === 'true';
             return attr;
         }
         if (type === 'edge') {
-            var symbols = prompt('Enter symbols for ' + type + ' , seperated by whitespace.');
+            var symbols = prompt(type + 'Symbols (seperated by whitespace)');
             // cut out whitespace and add symbols to the array
             return util.extractSymbols(symbols);
         }

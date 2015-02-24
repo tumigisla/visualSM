@@ -31,8 +31,8 @@ var inputs = {
 
     handleClick : function(e) {
         inputs.updateMouseCoords(e);
-        var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
-        if (state) state.isSelected = !state.isSelected;
+        // var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
+        // if (state) state.isSelected = !state.isSelected;
     },
 
     handleDblKlick : function(e) {
@@ -42,6 +42,8 @@ var inputs = {
     },
 
     mouseDown : function(e) {
+        var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
+
         if (e.shiftKey) { // shift + mouseClick
             inputs.updateMouseCoords(e);
             g_isBuildingEdge = true;
@@ -49,14 +51,21 @@ var inputs = {
             draw.edgeY1 = inputs.mouse.Y;
             visualSM.prepareEdge(inputs.mouse.X, inputs.mouse.Y);
         }
+        else if (state)
+            state.isSelected = true;
     },
 
     mouseUp : function(e) {
-        if (e.shiftKey) { // shift + mouseClick
+        var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
+
+        if (g_isBuildingEdge) {
             g_isBuildingEdge = false;
             inputs.updateMouseCoords(e);
             visualSM.insertEdge(inputs.mouse.X, inputs.mouse.Y);
         }
+
+        else if (state)
+            state.isSelected = false;
     },
 
     mouseMove : function(e) { inputs.updateMouseCoords(e); },

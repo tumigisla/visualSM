@@ -9,13 +9,13 @@
  from the State.
 */
 
-// Usage : 
+// Usage :
 //  new State({
 //      cx   : Number,
 //      cy   : Number,
 //      name : String,
 //      start : Boolean,
-//      fin : Boolean  
+//      fin : Boolean
 //  });
 function State(descr) {
     for (var property in descr) {
@@ -59,7 +59,9 @@ State.prototype.updateCoords = function(x, y) {
 // Interaction
 
 State.prototype.update = function(du) {
-    
+    if (this.isSelected) {
+        this.updateCoords(inputs.mouse.X, inputs.mouse.Y);
+    }
 };
 
 State.prototype.render = function(ctx) {
