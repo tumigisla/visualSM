@@ -4,6 +4,11 @@ var g_ctx = g_canvas.getContext("2d");
 
 var g_SM = new DFA(); // make this more general
 
+var g_routeEdges = [];
+var routeBuffer = 120;
+var shouldRenderRoute = false;
+var routePoints = [];
+
 g_SM.alphabet = ['a', 'b']; // make this more general
 
 /////////////
@@ -143,6 +148,19 @@ var visualSM = {
     evaluate : function() {
         var evalStr = this.addAttr('evalStr');
         g_SM.evalString(evalStr);
+
+        this.updateRouteEdges();
+    },
+
+    updateRouteEdges : function() {
+        g_routeEdges = g_SM._routeEdges;
+        routePoints = [];
+        for (var i = 0; i < g_routeEdges.length; i++) {
+            g_routeEdges[i].updateLinePoints(100);
+            for(var j = 0; j < g_routeEdges[i].points.length; j++)
+                // add as first element
+                routePoints.unshift(g_routeEdges[i].points[j]);
+        }
     }
 
 };
@@ -156,19 +174,34 @@ var updateSimulation = function(du) {
         states[i].update(du);
     for (var i = 0; i < edges.length; i++)
         edges[i].update(du);
+
+    if (routeBuffer < 0) {
+        shouldRenderRoute = true;
+        routeBuffer = 60;
+    }
+
+    if (routePoints.length > 0)
+        routeBuffer -= du;
 };
 
 var g_isBuildingEdge = false;
 
 var renderSimulation = function(ctx) {
-    if (g_isBuildingEdge)
-        draw.edge(ctx, draw.edgeX1, draw.edgeY1,
-                  inputs.mouse.X, inputs.mouse.Y);
-
     var states = g_SM._states,
         edges = g_SM._edges;
     for (var i = 0; i < states.length; i++)
         states[i].render(ctx);
     for (var i = 0; i < edges.length; i++)
         edges[i].render(ctx);
+
+    if (g_isBuildingEdge)
+        draw.edge(ctx, draw.edgeX1, draw.edgeY1,
+                  inputs.mouse.X, inputs.mouse.Y);
+
+
+    if (shouldRenderRoute) {
+        var coords = routePoints.pop();
+        draw.routeCircle(g_ctx, coords.x, coords.y);
+    }
+    // draw.routeCircle(g_ctx, 100, 100);
 };

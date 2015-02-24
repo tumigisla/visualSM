@@ -2,9 +2,9 @@
  A Deterministic Finite State Machine (DFA)
 
  Usage:
-    
+
     DFA.alphabet = [String];
-    
+
     DFA.generateState(name, start, fin);
     .
     .
@@ -29,7 +29,8 @@ DFA.prototype = new SM();
 //        initialized for next evaluation of a String.
 DFA.prototype._initRoute = function(str, startState) {
     this._crntState = this.findState(startState.name);    // starting state
-    this._route = str + ' |';
+    this._routeStr = str + ' |';
+    this._routeEdges = [];
 };
 
 // Usage : DFA.evalString(str);
@@ -48,16 +49,18 @@ DFA.prototype.evalString = function(str) {
         this.addToRoute(this._crntState);
         var psblEdge = this._crntState.psblTrans(str[i]);
 
-        if (psblEdge)
+        if (psblEdge) {
             this.move(psblEdge.toState);
+            this._routeEdges.push(psblEdge);
+        }
         else
-            this._route += "No possible transition from " + this._crntState.name 
+            this._routeStr += "No possible transition from " + this._crntState.name
                                         + " given input " + str[i] + ', ';
     }
-        
+
     this.addAcceptance();
     //this.printRoute();
-    visualSM.addToStats(this._route);
+    visualSM.addToStats(this._routeStr);
 };
 
 // Usage : DFA.move(newState);
@@ -70,14 +73,14 @@ DFA.prototype.move = function(newState) {
 // Post : The name of state has been
 //        added to the route string.
 DFA.prototype.addToRoute = function(state) {
-    this._route += state.name + ' -> ';
+    this._routeStr += state.name + ' -> ';
 };
 
 // Usage : DFA.printRoute();
 // Post : The route DFA took to evaluate the input
 //        have been logged to the console.
 DFA.prototype.printRoute = function() {
-    console.log(this._route);
+    console.log(this._routeStr);
 };
 
 // Usage : DFA.addAcceptance();
@@ -87,9 +90,9 @@ DFA.prototype.printRoute = function() {
 //        pushed to the back of the route string.
 DFA.prototype.addAcceptance = function() {
     if (this._crntState.isFin())
-        this._route += ' ' + this._crntState.name + ' : Accepted';
+        this._routeStr += ' ' + this._crntState.name + ' : Accepted';
     else
-        this._route += ' ' + this._crntState.name + ' : NOT Accepted';
+        this._routeStr += ' ' + this._crntState.name + ' : NOT Accepted';
 };
 
 

@@ -50,20 +50,40 @@ State.prototype.isFin = function() {
     return this.fin;
 };
 
-State.prototype.updateCoords = function(x, y) {
-    this.cx = x;
-    this.cy = y;
-};
-
 
 // Interaction
 
-State.prototype.update = function(du) {
-    if (this.isSelected) {
-        this.updateCoords(inputs.mouse.X, inputs.mouse.Y);
+State.prototype.updateCoords = function(x, y) {
+    if (this.isInCanvas) {
+        this.cx = x;
+        this.cy = y;
     }
 };
 
+// Fix this, is NOT working.
+State.prototype.isInCanvas = function() {
+    var canvasWidth = g_canvas.width,
+        canvasHeight = g_canvas.height;
+
+    var cx = this.cx,
+        cy = this.cy,
+        rad = this.radius;
+
+    var inLeftBound = cx - rad > 0,
+        inTopBound = cy - rad > 0,
+        inRightBound = cx + rad < canvasWidth,
+        inBtmBound = cy + rad < canvasHeight;
+
+    return inLeftBound && inTopBound && inRightBound && inBtmBound;
+};
+
+State.prototype.update = function(du) {
+    if (this.isSelected)
+        this.updateCoords(inputs.mouse.X, inputs.mouse.Y);
+
+};
+
 State.prototype.render = function(ctx) {
-    draw.state(ctx, this.cx, this.cy, this.radius, this.isSelected);
+    draw.state(ctx, this.cx, this.cy, this.radius,
+               this.isSelected, this.isStart(), this.isFin());
 };

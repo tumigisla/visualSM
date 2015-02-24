@@ -38,8 +38,8 @@ var inputs = {
     handleDblKlick : function(e) {
         inputs.updateMouseCoords(e);
         if (!e.which) return; // no button being pressed
-        visualSM.insertState(inputs.mouse.X, inputs.mouse.Y)
-    },
+        visualSM.insertState(inputs.mouse.X, inputs.mouse.Y);
+   },
 
     mouseDown : function(e) {
         var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);

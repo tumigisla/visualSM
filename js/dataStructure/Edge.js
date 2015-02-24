@@ -6,11 +6,11 @@
  transitions from fromState to toState.
 */
 
-// Usage : 
+// Usage :
 //  new Edge({
 //      fromState : State,
 //      toState : State,
-//      symbols : [String]  
+//      symbols : [String]
 //  });
 function Edge(descr) {
     for (var property in descr) {
@@ -20,6 +20,30 @@ function Edge(descr) {
 
 
 // Interaction
+
+// No return value. Updates the points on this
+// Edge.
+Edge.prototype.updateLinePoints = function(frames) {
+    var dx = this.x2 - this.x1,
+        dy = this.y2 - this.y1,
+        length = Math.sqrt(util.square(dx) + util.square(dy));
+
+    var incrX = dx / frames,
+        incrY = dy / frames;
+
+    this.points = [];
+
+    this.points.push({x : this.x1, y : this.y1});
+
+    for (var i = 0; i < frames; i++) {
+        this.points.push({
+            x : this.x1 + (incrX * i),
+            y : this.y1 + (incrY * i)
+        });
+    }
+
+    this.points.push({x : this.x2, y : this.y2});
+};
 
 Edge.prototype.updateStartCoords = function(x, y) {
     this.x1 = x;
