@@ -86,4 +86,7 @@ State.prototype.update = function(du) {
 State.prototype.render = function(ctx) {
     draw.state(ctx, this.cx, this.cy, this.radius,
                this.isSelected, this.isStart(), this.isFin());
+
+    if (this.name)
+        draw.printLetters(ctx, [this.name], this.cx - 9, this.cy + 7, 'state');
 };

@@ -78,4 +78,9 @@ Edge.prototype.update = function(du) {
 
 Edge.prototype.render = function(ctx) {
     draw.edge(ctx, this.x1, this.y1, this.x2, this.y2);
+
+    var dx = this.x2 - this.x1,
+        dy = this.y2 - this.y1;
+    if (this.symbols)
+        draw.printLetters(ctx, this.symbols, this.x1 + dx/2, this.y1 + ((dy/2) - 20), 'edge');
 };

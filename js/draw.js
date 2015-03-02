@@ -45,7 +45,23 @@ var draw = {
 
         var angle = Math.atan2(dy, dx);
 
-        this.drawArrow(ctx, x1, y1, x2, y2, 3, 1, undefined, 20); // use default angle, d
+        this.drawArrow(ctx, x1, y1, x2, y2, 3, 1, undefined, 20); // use default angle
+    },
+
+    // Pre : type is the string 'state' or 'edge'
+    // Post : All symbols have been printed starting at x.
+    printLetters : function(ctx, symbols, x, y, type) {
+        console.log(type);
+        if (type !== 'state' && type !== 'edge') return;
+        ctx.font = type === 'state' ? 'bold 25px Arial' : 'bold 15px Arial';
+
+        for (var i = 0; i < symbols.length; i++) {
+            if (i === symbols.length - 1)
+                // Print last symbol without a comma.
+                ctx.fillText(symbols[i], x + (20 * i), y);
+            else
+                ctx.fillText(symbols[i] + ' ,', x + (20 * i), y);
+        }
     },
 
     routeCircle : function(ctx, x, y) {
@@ -100,6 +116,7 @@ var draw = {
       ctx.beginPath();
       ctx.moveTo(fromx,fromy);
       ctx.lineTo(tox,toy);
+      ctx.strokeStyle = 'black';
       ctx.stroke();
 
       // calculate the angle of the line
