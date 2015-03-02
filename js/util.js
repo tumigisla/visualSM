@@ -1,7 +1,7 @@
 var util = {
 
     // Find out if A contains i
-    // Works for arrays and strings. 
+    // Works for arrays and strings.
     contains : function(A, i) {
         for (var j = 0; j < A.length; j++)
             if (A[j] === i)
@@ -13,6 +13,13 @@ var util = {
     // Input : x
     // Output : x^2
     square : function(x) {return x*x},
+
+    // Pre : x is a number
+    // Input : x
+    // Output : absolute value of x
+    abs : function(x) {
+        return x < 0 ? -x : x;
+    },
 
     // Input : x and y coords of two entities
     // Output : The squared distance between the

@@ -44,14 +44,14 @@ var inputs = {
     mouseDown : function(e) {
         var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
 
-        if (e.shiftKey) { // shift + mouseClick
+        if (e.shiftKey && routePoints.length === 0) { // shift + mouseClick
             inputs.updateMouseCoords(e);
             g_isBuildingEdge = true;
             draw.edgeX1 = inputs.mouse.X;
             draw.edgeY1 = inputs.mouse.Y;
             visualSM.prepareEdge(inputs.mouse.X, inputs.mouse.Y);
         }
-        else if (state)
+        else if (state && routePoints.length === 0)
             state.isSelected = true;
     },
 
