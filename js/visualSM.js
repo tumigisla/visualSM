@@ -9,11 +9,20 @@ var routeBuffer = 120;
 var shouldRenderRoute = false;
 var routePoints = [];
 
-g_SM.alphabet = ['a', 'b']; // make this more general
-
 /////////////
 
 var visualSM = {
+
+    // Pre : symbols is an array of strings
+    // Post : Symbols from the symbols array that were
+    //        previously not in this SM alphabet have
+    //        been added to the alphabet.
+    maybeUpdateAlphabet : function(symbols) {
+        for (var i = 0; i < symbols.length; i++) {
+            var inAlphabet = util.contains(g_SM.alphabet, symbols[i]);
+            if (!inAlphabet) g_SM.alphabet.push(symbols[i]);
+        }
+    },
 
     // Returns the state object of the state
     // that's close enough to the current mouse
@@ -83,6 +92,8 @@ var visualSM = {
         var newEdge = g_SM._edges[g_SM._edges.length - 1];
         newEdge.toState = toState;
         newEdge.symbols = this.addAttr('edge');
+
+        this.maybeUpdateAlphabet(newEdge.symbols);
 
         var clampCoords = newEdge.clampToState(x, y, toState);
         newEdge.updateFinCoords(clampCoords[0], clampCoords[1]);

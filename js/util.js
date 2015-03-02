@@ -2,7 +2,9 @@ var util = {
 
     // Find out if A contains i
     // Works for arrays and strings.
+    // Brute force.
     contains : function(A, i) {
+        if (A.length === 0) return false;
         for (var j = 0; j < A.length; j++)
             if (A[j] === i)
                 return true;
