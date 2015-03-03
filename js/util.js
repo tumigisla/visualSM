@@ -1,14 +1,19 @@
 var util = {
 
-    // Find out if A contains i
-    // Works for arrays and strings.
-    // Brute force.
+    // Pre : A is an array, i is a string.
+    // Return value : True if i is in A.
     contains : function(A, i) {
         if (A.length === 0) return false;
         for (var j = 0; j < A.length; j++)
             if (A[j] === i)
                 return true;
         return false;
+    },
+
+    // Pre : A is an array
+    // Return value : True if A is empty.
+    isEmpty : function(A) {
+        return A.length === 0;
     },
 
     // Pre : x is a number

@@ -9,10 +9,10 @@ NFA.prototype = new SM();
 // DATA STRUCTURES WE NEED
 
 // Holds the current set of states.
-var oldStates = new Stack();
+var oldStates = [];
 
 // Holds the "next" set of states.
-var newStates = new Stack();
+var newStates = [];
 
 // Boolean array, to indicate which states are
 // in newStates, for efficiency.
@@ -33,16 +33,17 @@ var move = [];
 // push s onto oldStates and set alreadyOn[s] to true.
 
 var anonFunc = function() {
-S = epsClosure(s0);
-c = nextChar();
-while (c != eof) {
-    S = epsClosure(move(S, c));
+    S = epsClosure(s0);
     c = nextChar();
-}
-return util.intersect(S, F) != [];
+    while (c != eof) {
+        S = epsClosure(move(S, c));
+        c = nextChar();
+    }
+    // TODO : implement intersect function in util.
+    return util.intersect(S, F) != [];
 };
 
-// This function pushes state s onto newStates, 
+// This function pushes state s onto newStates,
 // sets alreadyOn[s] to true, and calls itself
 // recursively on the states in move[s, eps]
 // in order to further the computation of
@@ -63,13 +64,13 @@ var addState = function(s) {
 // T is a SM
 var epsClosure = function(T) {
     // push all states of T onto stack
-    var stack = new Stack();
+    var stack = [];
     for (var t = 0; t < T._states.length; t++) {
         stack.push(T._states[t]);
         // initialize eps-closure(T) to T
         var epsClos = T;
 
-        while(!stack.isEmpty()){
+        while(!util.isEmpty(stack)){
             // pop t, the top element, off stack
             var t = stack.pop();
             for (var e = 0; e < T._edges.length; e++) {
@@ -77,13 +78,13 @@ var epsClosure = function(T) {
                     var u = e;
                     if (!epsClos.hasState(u)) {
                         epsClos.generateState('from'+epsClos.name, false, false);
-                        stack.push(u);  
+                        stack.push(u);
                     }
-                }   
+                }
             }
         }
     }
-    console.log('HERE');
+    console.log(T._states);
 };
 
 /*
@@ -93,9 +94,12 @@ testSim.alphabet = ['a', 'b', 'eps'];
 
 testSim.generateState('q0', true, false);
 testSim.generateState('q1', false, false);
+testSim.generateState('q1', false, false);
 testSim.generateState('qf', false, true);
 
 testSim.generateEdge(testSim.findState('q0'), testSim.findState('q1'), ['a', 'b', 'eps']);
+testSim.generateEdge(testSim.findState('q0'), testSim.findState('q2'), ['a', 'b', 'eps']);
+testSim.generateEdge(testSim.findState('q2'), testSim.findState('qf'), ['a', 'b']);
 testSim.generateEdge(testSim.findState('q1'), testSim.findState('qf'), ['a', 'b']);
 
 epsClosure(testSim);
