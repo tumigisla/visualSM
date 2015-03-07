@@ -40,7 +40,7 @@ State.prototype.psblTrans = function(str) {
 
 // TODO : combine this function and the psblTrans function from above.
 // Always returns an object of type Set.
-State.prototype.psblTransNfa = function(str) {
+State.prototype.transition = function(str) {
     var transStates = new Set();
     for (var i = 0; i < this.outgoingEdges.length; i++) {
         var anOutgoingEdge = this.outgoingEdges[i];

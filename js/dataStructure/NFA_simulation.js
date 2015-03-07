@@ -1,5 +1,4 @@
 function NFA() {
-    this._startingState;
     this._transTable = {};
 }
 
@@ -9,10 +8,10 @@ NFA.prototype = new SM();
 NFA.prototype.updateTransTable = function() {
     for (var i = 0; i < this._states.length; i++) {
         var aState = this._states[i];
-        this._transTable[i] = {};
+        this._transTable[aState.id] = {};
         for (var a = 0; a < this.alphabet.length; a++) {
             var aSymbol = this.alphabet[a];
-            this._transTable[i][aSymbol] = aState.psblTransNfa(aSymbol);
+            this._transTable[aState.id][aSymbol] = aState.transition(aSymbol);
         }
     }
 };
@@ -22,12 +21,12 @@ NFA.prototype.dumpTransTable = function() {
     var dumpData = [];
     var firstLine = "STATE \t ";
     for (var i = 0; i < this.alphabet.length; i++)
-        firstLine += this.alphabet[i] + "\t";
+        firstLine += this.alphabet[i] + "\t\t";
     dumpData.push(firstLine);
 
     for (var state = 0; state < util.objSize(this._transTable); state++) {
         var aState = this._transTable[state];
-        var tmpStr = state + "\t";
+        var tmpStr = state + "\t\t";
         for (var symbol = 0; symbol < this.alphabet.length; symbol++) {
             var symbolSet = aState[this.alphabet[symbol]];
             if (symbolSet.isEmpty())
@@ -35,8 +34,8 @@ NFA.prototype.dumpTransTable = function() {
             else {
                 tmpStr += "{";
                 for (var i = 0; i < symbolSet.length(); i++) 
-                    tmpStr += symbolSet.getObject(i).name;
-                tmpStr += "}";
+                    tmpStr += symbolSet.getObject(i).id;
+                tmpStr += "} \t";
             }
         }
         dumpData.push(tmpStr);
@@ -44,10 +43,57 @@ NFA.prototype.dumpTransTable = function() {
     return dumpData;
 };
 
-NFA.prototype.transition = function(state) /* and some more inputs */ {
-
+// Set of NFA states reachable from and NFA state
+// on eps-transitions alone.
+// Pre : state is an instance of the State object.
+NFA.prototype.epsClosureState = function(state) {
+    var Dstates = [state];
+    while (Dstates.length > 0) {
+        var T = Dstates.pop();
+        for (var a = 0; a < this.alphabet.length; a++) { // for each input symbol
+            var anInputSymbol = this.alphabet[a];
+            var U = this.epsClosureSet(this.move(T, anInputSymbol));
+            if (!util.contains(Dstates, U))
+                for (var i = 0; i < U.length; i++)
+                    Dstates.push(U[i]);
+            this._transTable[T.id][anInputSymbol] = U;
+        }
+    }
 };
 
+
+// Set of NFA states reachable from some NFA state
+// in the stateSet on eps-transitions alone.
+NFA.prototype.epsClosureSet = function(stateSet) {
+    var stack = [];
+    for (var i = 0; i < stateSet.length; i++)
+        stack.push(stateSet.getObject(i));
+    var epsClosureT = stateSet;
+
+    while(stack.length > 0) {
+        var t = stack.pop();
+        var epsStateSet = this.move(t, 'eps');
+        for (var i = 0; i < epsStateSet.length; i++) {
+            var u = epsStateSet[i];
+            if (util.contains(epsClosureT, u)) {
+                epsClosureT.add(u);
+                stack.push(u);
+            }
+        }
+    }
+    return epsClosureT;
+};
+
+// Returns the set of states that you can go to when you're in
+// state and you read symbol.
+NFA.prototype.move = function(state, symbol) {
+    if (state)
+        return state.transition(symbol);
+    else 
+        return new Set();
+};
+
+/////////////////////////////////////////////////////////
 
 var testNfa = new NFA();
 
@@ -64,4 +110,16 @@ testNfa.generateEdge(testNfa.findState('B'), testNfa.findState('C'), ['a', 'b'])
 testNfa.generateEdge(testNfa.findState('C'), testNfa.findState('D'), ['a']);
 
 testNfa.updateTransTable();
-console.log(testNfa.dumpTransTable());
+
+var transTableData = testNfa.dumpTransTable();
+for (var i = 0; i < transTableData.length; i++)
+    console.log(transTableData[i]);
+
+// epsilon closure of starting state
+var set = new Set();
+set.add(testNfa.findState('A'));
+console.log(testNfa.epsClosureSet(set));
+
+var transTableData = testNfa.dumpTransTable();
+for (var i = 0; i < transTableData.length; i++)
+    console.log(transTableData[i]);

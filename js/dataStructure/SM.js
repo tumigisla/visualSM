@@ -31,6 +31,9 @@ SM.prototype.generateState = function(cx, cy, name, start, fin) {
 
     this._states.push(state);
     this._id ++;
+
+    // Only possible to have one starting state.
+    if (start && !this._startingState) this._startingState = state;
 };
 
 // Usage : SM.generateEdge(fromState, toState, symbols)
