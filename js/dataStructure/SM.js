@@ -10,6 +10,7 @@ function SM(descr) {
     this._edges = [];
 
     this.alphabet = [];
+    this._id = 0;       // TODO: acknowledge all states completely by their id, not by name.
 
 }
 
@@ -24,10 +25,12 @@ SM.prototype.generateState = function(cx, cy, name, start, fin) {
         cy : cy,
         name : name,
         start : start,
-        fin : fin
+        fin : fin,
+        id : this._id
     });
 
     this._states.push(state);
+    this._id ++;
 };
 
 // Usage : SM.generateEdge(fromState, toState, symbols)

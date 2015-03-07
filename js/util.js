@@ -1,6 +1,6 @@
 var util = {
 
-    // Pre : A is an array, i is a string.
+    // Pre : A is an array, i is some object.
     // Return value : True if i is in A.
     contains : function(A, i) {
         if (A.length === 0) return false;
@@ -65,6 +65,31 @@ var util = {
             else w = w + str[i];
         }
         return s;
+    },
+
+    // Input : set1 and set2 are instances of the Set object.
+    // Output : A new set, the union of set1 and set2.
+    union : function(set1, set2) {
+        var unionSet = new Set();
+        unionSet.objects = set1;    // get all objects from set1, a little hack
+        for (var i = 0; i < set1.length; i++)
+            // get all objects from set2
+            unionSet.add(set2.getObject(i));
+        return unionSet;
+    },
+
+    // Input : set1 and set2 are instances of the Set object.
+    // Output : A new set, the intersection of set1 and set2
+    intersect : function(set1, set2) {
+        var intersectSet = new Set();
+        for (var i = 0; i < set1.length; i++) {
+            // For every object in set1, add it to
+            // unionSet if it's in set2 as well.
+            var obj_i = set1.getObject(i);
+            if (set2.contains(obj_i))
+                intersectSet.add(obj_i);
+        }
+        return intersectSet;
     }
 
 };

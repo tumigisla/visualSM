@@ -38,6 +38,18 @@ State.prototype.psblTrans = function(str) {
             return this.outgoingEdges[i];
 };
 
+// TODO : combine this function and the psblTrans function from above.
+// Always returns an object of type Set.
+State.prototype.psblTransNfa = function(str) {
+    var transStates = new Set();
+    for (var i = 0; i < this.outgoingEdges.length; i++) {
+        var anOutgoingEdge = this.outgoingEdges[i];
+        if (util.contains(anOutgoingEdge.symbols, str))
+            transStates.add(anOutgoingEdge.toState);
+    }
+    return transStates; // A set of states or the empty set.
+};
+
 // Usage : State.isStart();
 // Return value : True if State is a starting position.
 State.prototype.isStart = function() {
