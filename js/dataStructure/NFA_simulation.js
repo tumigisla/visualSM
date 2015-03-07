@@ -47,6 +47,7 @@ NFA.prototype.dumpTransTable = function() {
 // on eps-transitions alone.
 // Pre : state is an instance of the State object.
 NFA.prototype.epsClosureState = function(state) {
+    var epsClosureS = new Set();
     var Dstates = [state];
     while (Dstates.length > 0) {
         var T = Dstates.pop();
@@ -54,11 +55,13 @@ NFA.prototype.epsClosureState = function(state) {
             var anInputSymbol = this.alphabet[a];
             var U = this.epsClosureSet(this.move(T, anInputSymbol));
             if (!util.contains(Dstates, U))
-                for (var i = 0; i < U.length(); i++)
+                for (var i = 0; i < U.length(); i++) {
                     Dstates.push(U[i]);
-            this._transTable[T.id][anInputSymbol] = U;
+                    epsClosureS.add(U.getObject(i));
+                }
         }
     }
+    return epsClosureS;
 };
 
 
@@ -118,4 +121,4 @@ for (var i = 0; i < transTableData.length; i++)
 // epsilon closure of starting state
 var set = new Set();
 set.add(testNfa.findState('A'));
-console.log(testNfa.epsClosureSet(set));
+console.log(testNfa.epsClosureState(testNfa.findState('A')));
