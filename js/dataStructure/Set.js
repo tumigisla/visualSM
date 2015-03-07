@@ -18,6 +18,10 @@ Set.prototype.getObject = function(index) {
     return this._objects[index];
 };
 
-Set.prototype.length = this._objects ? this._objects.length : 0;
+Set.prototype.length = function(){
+    return this._objects ? this._objects.length : 0;
+};
 
-Set.prototype.isEmpty = this.length === 0;
+Set.prototype.isEmpty = function() {
+    return this.length() === 0;
+};

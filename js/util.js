@@ -90,6 +90,16 @@ var util = {
                 intersectSet.add(obj_i);
         }
         return intersectSet;
-    }
+    },
 
+
+    // Input : obj is an Object.
+    // Output : The number of elements obj has.
+    objSize : function(obj) {
+        var size = 0, key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) size++;
+        }
+        return size;
+    }
 };

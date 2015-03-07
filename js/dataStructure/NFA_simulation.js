@@ -17,29 +17,30 @@ NFA.prototype.updateTransTable = function() {
     }
 };
 
+// Should print the correct transition table now.
 NFA.prototype.dumpTransTable = function() {
     var dumpData = [];
     var firstLine = "STATE \t ";
     for (var i = 0; i < this.alphabet.length; i++)
         firstLine += this.alphabet[i] + "\t";
-    dumpData.push(firsLine);
+    dumpData.push(firstLine);
 
-    for (var state = 0; state < this._transTable.length; state++) {
+    for (var state = 0; state < util.objSize(this._transTable); state++) {
         var aState = this._transTable[state];
         var tmpStr = state + "\t";
         for (var symbol = 0; symbol < this.alphabet.length; symbol++) {
             var symbolSet = aState[this.alphabet[symbol]];
-            if (symbolSet.isEmpty)
+            if (symbolSet.isEmpty())
                 tmpStr += "Empt \t";
-            else
-                // TODO: print each object of set.
-                tmpStr += symbolSet;
+            else {
+                tmpStr += "{";
+                for (var i = 0; i < symbolSet.length(); i++) 
+                    tmpStr += symbolSet.getObject(i).name;
+                tmpStr += "}";
+            }
         }
+        dumpData.push(tmpStr);
     }
-
-
-
-
     return dumpData;
 };
 
@@ -63,3 +64,4 @@ testNfa.generateEdge(testNfa.findState('B'), testNfa.findState('C'), ['a', 'b'])
 testNfa.generateEdge(testNfa.findState('C'), testNfa.findState('D'), ['a']);
 
 testNfa.updateTransTable();
+console.log(testNfa.dumpTransTable());
