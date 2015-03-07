@@ -4,7 +4,6 @@ function NFA() {
 
 NFA.prototype = new SM();
 
-
 NFA.prototype.updateTransTable = function() {
     for (var i = 0; i < this._states.length; i++) {
         var aState = this._states[i];
@@ -87,6 +86,77 @@ NFA.prototype.epsClosureSet = function(stateSet) {
     return epsClosureT;
 };
 
+var alreadyOn = [],
+    oldStates = new Set(),
+    newStates = new Set();
+
+NFA.prototype.simulate = function(str) {
+    
+    for (var i = 0; i < this._states.length; i++) {
+        var aState = this._states[i];
+        alreadyOn[aState.id] = false;
+    }   // CHECK
+
+    var epsClosStart = this.epsClosureState(this._startingState);   // CHECK
+    for (var i = 0; i < epsClosStart.length(); i++) {
+        var aState = epsClosStart.getObject(i);
+        oldStates.add(aState);
+        alreadyOn[aState.id] = true;
+    }   // CHECK
+
+    // for (s on oldStates)
+    for (var a = 0; a < str.length; a++) {
+        var c = str[a];
+        for (var i = 0; i < oldStates.length(); i++) {
+            var aState = oldStates.getObject(i);
+            var moveSet = this.move(aState, c);
+            for (var j = 0; j < moveSet.length(); j++) {
+                var moveState = moveSet.getObject(j);
+                if (!alreadyOn[moveState.id])
+                    this.addState(moveState);
+            }
+            // pop aState from oldStates.
+            oldStates.remove(aState);
+        }
+
+        // for (s on newStates)
+        for (var i = 0; i < newStates.length(); i++) {
+            var aState = newStates.getObject(i);
+            
+            // pop aState from newStates
+            newStates.remove(aState);
+            // push aState onto oldStates
+            oldStates.add(aState);
+     
+            if (aState) alreadyOn[aState.id] = false;
+        }
+    }
+
+    /*
+    console.log(oldStates);
+    console.log(this.finalStates);
+    console.log(util.intersect(newStates, this.finalStates));
+
+    // (if S intersect F != emptySet) return "Yes"
+    if (util.intersect(newStates, this.finalStates).length() !== 0)
+        console.log("Yes");
+    else
+        console.log("No");
+    */
+};
+
+
+NFA.prototype.addState = function(state) {
+    newStates.add(state);
+    alreadyOn[state.id] = true;
+    var moveSet = this.move(state, 'eps');
+    for (var i = 0; i < moveSet.length(); i++) {
+        var aState = moveSet.getObject(i);
+        if (!alreadyOn[aState.id])
+            this.addState(aState);
+    }
+};
+
 // Returns the set of states that you can go to when you're in
 // state and you read symbol.
 NFA.prototype.move = function(state, symbol) {
@@ -118,7 +188,4 @@ var transTableData = testNfa.dumpTransTable();
 for (var i = 0; i < transTableData.length; i++)
     console.log(transTableData[i]);
 
-// epsilon closure of starting state
-var set = new Set();
-set.add(testNfa.findState('A'));
-console.log(testNfa.epsClosureState(testNfa.findState('A')));
+testNfa.simulate(['a', 'a', 'a']);

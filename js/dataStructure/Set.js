@@ -10,13 +10,18 @@ Set.prototype.add = function(object) {
     this._objects.push(object);
 };
 
+Set.prototype.remove = function(object) {
+    var index = this.indexOf(object);
+    delete this._objects[index];
+};
+
 Set.prototype.contains = function(object) {
     return util.contains(this._objects, object);
 };
 
 Set.prototype.getObject = function(index) {
     return this._objects[index];
-};
+}; 
 
 Set.prototype.length = function(){
     return this._objects ? this._objects.length : 0;
@@ -24,4 +29,8 @@ Set.prototype.length = function(){
 
 Set.prototype.isEmpty = function() {
     return this.length() === 0;
+};
+
+Set.prototype.indexOf = function(object) {
+    return this._objects.indexOf(object);
 };
