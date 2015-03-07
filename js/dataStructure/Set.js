@@ -11,7 +11,7 @@ Set.prototype.add = function(object) {
 };
 
 Set.prototype.contains = function(object) {
-    return util.contains(this._objects, objects);
+    return util.contains(this._objects, object);
 };
 
 Set.prototype.getObject = function(index) {

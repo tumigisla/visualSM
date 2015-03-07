@@ -54,7 +54,7 @@ NFA.prototype.epsClosureState = function(state) {
             var anInputSymbol = this.alphabet[a];
             var U = this.epsClosureSet(this.move(T, anInputSymbol));
             if (!util.contains(Dstates, U))
-                for (var i = 0; i < U.length; i++)
+                for (var i = 0; i < U.length(); i++)
                     Dstates.push(U[i]);
             this._transTable[T.id][anInputSymbol] = U;
         }
@@ -66,16 +66,16 @@ NFA.prototype.epsClosureState = function(state) {
 // in the stateSet on eps-transitions alone.
 NFA.prototype.epsClosureSet = function(stateSet) {
     var stack = [];
-    for (var i = 0; i < stateSet.length; i++)
+    for (var i = 0; i < stateSet.length(); i++)
         stack.push(stateSet.getObject(i));
     var epsClosureT = stateSet;
 
     while(stack.length > 0) {
         var t = stack.pop();
         var epsStateSet = this.move(t, 'eps');
-        for (var i = 0; i < epsStateSet.length; i++) {
-            var u = epsStateSet[i];
-            if (util.contains(epsClosureT, u)) {
+        for (var i = 0; i < epsStateSet.length(); i++) {
+            var u = epsStateSet.getObject(i);
+            if (!epsClosureT.contains(u)) {
                 epsClosureT.add(u);
                 stack.push(u);
             }
@@ -119,7 +119,3 @@ for (var i = 0; i < transTableData.length; i++)
 var set = new Set();
 set.add(testNfa.findState('A'));
 console.log(testNfa.epsClosureSet(set));
-
-var transTableData = testNfa.dumpTransTable();
-for (var i = 0; i < transTableData.length; i++)
-    console.log(transTableData[i]);
