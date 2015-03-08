@@ -28,14 +28,10 @@ NFA.prototype.dumpTransTable = function() {
         var tmpStr = state + "\t\t";
         for (var symbol = 0; symbol < this.alphabet.length; symbol++) {
             var symbolSet = aState[this.alphabet[symbol]];
-            if (symbolSet.isEmpty())
-                tmpStr += "Empt \t";
-            else {
-                tmpStr += "{";
-                for (var i = 0; i < symbolSet.length(); i++) 
-                    tmpStr += symbolSet.getObject(i).id;
-                tmpStr += "} \t";
-            }
+            tmpStr += "{";
+            for (var i = 0; i < symbolSet.length(); i++) 
+                tmpStr += symbolSet.getObject(i).id + ", ";
+            tmpStr += "} \t";
         }
         dumpData.push(tmpStr);
     }
@@ -87,71 +83,63 @@ NFA.prototype.epsClosureSet = function(stateSet) {
 };
 
 var alreadyOn = [],
-    oldStates = new Set(),
-    newStates = new Set();
+    oldStates = [],
+    newStates = [];
 
 NFA.prototype.simulate = function(str) {
-    
-    for (var i = 0; i < this._states.length; i++) {
-        var aState = this._states[i];
-        alreadyOn[aState.id] = false;
-    }   // CHECK
 
-    var epsClosStart = this.epsClosureState(this._startingState);   // CHECK
-    for (var i = 0; i < epsClosStart.length(); i++) {
-        var aState = epsClosStart.getObject(i);
-        oldStates.add(aState);
+    // init alreadyOn
+    for (var i = 0; i < this._states.length; i++)
+        alreadyOn[this._states[i].id] = false;
+
+    var epsClosureStart = this.epsClosureState(this._startingState);
+    for (var i = 0; i < epsClosureStart.length(); i++) {
+        var aState = epsClosureStart.getObject(i);
+        oldStates.push(aState);
         alreadyOn[aState.id] = true;
-    }   // CHECK
+        this.addState(aState);
+    }
 
-    // for (s on oldStates)
-    for (var a = 0; a < str.length; a++) {
-        var c = str[a];
-        for (var i = 0; i < oldStates.length(); i++) {
-            var aState = oldStates.getObject(i);
-            var moveSet = this.move(aState, c);
-            for (var j = 0; j < moveSet.length(); j++) {
-                var moveState = moveSet.getObject(j);
+
+    for (var i = 0; i < str.length; i++) {
+        var c = str[i];
+        // for (s on oldStates)
+        for (var s = 0; s < oldStates.length; s++) {
+            var aState = oldStates[s];
+            for (var j = 0; j < this.move(aState, c).length(); j++) {
+                var moveState = this.move(aState, c).getObject(j);
                 if (!alreadyOn[moveState.id])
                     this.addState(moveState);
             }
-            // pop aState from oldStates.
-            oldStates.remove(aState);
+            oldStates.shift();
         }
 
         // for (s on newStates)
-        for (var i = 0; i < newStates.length(); i++) {
-            var aState = newStates.getObject(i);
-            
-            // pop aState from newStates
-            newStates.remove(aState);
-            // push aState onto oldStates
-            oldStates.add(aState);
-     
-            if (aState) alreadyOn[aState.id] = false;
+        for (var s = 0; s < newStates.length; s++) {
+            var aState = newStates[s];
+            newStates.shift();
+            oldStates.push(aState);
+            alreadyOn[aState.id] = false;
         }
     }
 
-    /*
-    console.log(oldStates);
-    console.log(this.finalStates);
-    console.log(util.intersect(newStates, this.finalStates));
+    // add oldStates to a new set
+    var set = new Set();
+    for (var i = 0; i < oldStates.length; i++)
+        set.add(oldStates[i]);
 
-    // (if S intersect F != emptySet) return "Yes"
-    if (util.intersect(newStates, this.finalStates).length() !== 0)
-        console.log("Yes");
+    if (util.areInterSecting(set, this.finalStates))
+        console.log("YES");
     else
-        console.log("No");
-    */
+        console.log("NO");
 };
 
 
-NFA.prototype.addState = function(state) {
-    newStates.add(state);
-    alreadyOn[state.id] = true;
-    var moveSet = this.move(state, 'eps');
-    for (var i = 0; i < moveSet.length(); i++) {
-        var aState = moveSet.getObject(i);
+NFA.prototype.addState = function(s) {
+    newStates.push(s);
+    alreadyOn[s.id] = true;
+    for (var i = 0; i < this.move(s, 'eps'); i++) {
+        var aState = this.move(s, 'eps')[i];
         if (!alreadyOn[aState.id])
             this.addState(aState);
     }
@@ -174,13 +162,11 @@ var testNfa = new NFA();
 testNfa.alphabet = ['a', 'b', 'eps'];
 
 testNfa.generateState(0, 0, 'A', true, false);
-testNfa.generateState(0, 0, 'B', false, false);
-testNfa.generateState(0, 0, 'C', false, false);
-testNfa.generateState(0, 0, 'D', false, true);
+testNfa.generateState(0, 0, 'B', false, true);
+testNfa.generateState(0, 0, 'C', false, true);
 
 testNfa.generateEdge(testNfa.findState('A'), testNfa.findState('B'), ['a', 'b', 'eps']);
-testNfa.generateEdge(testNfa.findState('B'), testNfa.findState('C'), ['a', 'b']);
-testNfa.generateEdge(testNfa.findState('C'), testNfa.findState('D'), ['a']);
+testNfa.generateEdge(testNfa.findState('A'), testNfa.findState('C'), ['a']);
 
 testNfa.updateTransTable();
 
@@ -188,4 +174,4 @@ var transTableData = testNfa.dumpTransTable();
 for (var i = 0; i < transTableData.length; i++)
     console.log(transTableData[i]);
 
-testNfa.simulate(['a', 'a', 'a']);
+testNfa.simulate(['a']);

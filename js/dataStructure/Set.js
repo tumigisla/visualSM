@@ -16,7 +16,11 @@ Set.prototype.remove = function(object) {
 };
 
 Set.prototype.contains = function(object) {
-    return util.contains(this._objects, object);
+    if (this.length() === 0) return false;
+    for (var i = 0; i < this.length(); i++)
+        if (this.getObject(i).id === object.id) // id's should be unique
+            return true;
+    return false;
 };
 
 Set.prototype.getObject = function(index) {

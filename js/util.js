@@ -1,5 +1,6 @@
 var util = {
 
+    // Does not work for sets.
     // Pre : A is an array, i is some object.
     // Return value : True if i is in A.
     contains : function(A, i) {
@@ -82,7 +83,8 @@ var util = {
     // Output : A new set, the intersection of set1 and set2
     intersect : function(set1, set2) {
         var intersectSet = new Set();
-        for (var i = 0; i < set1.length; i++) {
+
+        for (var i = 0; i < set1.length(); i++) {
             // For every object in set1, add it to
             // unionSet if it's in set2 as well.
             var obj_i = set1.getObject(i);
@@ -92,6 +94,11 @@ var util = {
         return intersectSet;
     },
 
+    // Input : set1 and set2 are instances of the Set object.
+    // Output : True iiff set1 and set2 are intersecting.
+    areInterSecting : function(set1, set2) {
+        return this.intersect(set1, set2).length() > 0;
+    },
 
     // Input : obj is an Object.
     // Output : The number of elements obj has.
