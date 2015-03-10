@@ -45,4 +45,4 @@ window.requestAnimationFrame =
 
 
 // Start the simulation
-//main.init();
+main.init();

@@ -4,6 +4,12 @@ function NFA() {
 
 NFA.prototype = new SM();
 
+NFA.prototype._initRoute = function(str, startState) {
+    this._crntState = this.findState(startState.id);    // find state by id
+    this._routeStr = str + '|';
+    this._routeEdges = [];
+};
+
 NFA.prototype.updateTransTable = function() {
     for (var i = 0; i < this._states.length; i++) {
         var aState = this._states[i];
@@ -73,7 +79,7 @@ NFA.prototype.epsClosureSet = function(stateSet) {
         var epsStateSet = this.move(t, 'eps');
         for (var i = 0; i < epsStateSet.length(); i++) {
             var u = epsStateSet.getObject(i);
-            if (!epsClosureT.contains(u)) {
+            if (u  && !epsClosureT.contains(u)) {
                 epsClosureT.add(u);
                 stack.push(u);
             }
@@ -87,6 +93,10 @@ var alreadyOn = [],
     newStates = [];
 
 NFA.prototype.simulate = function(str) {
+
+    var startState = this.findStartState();
+    str = str.toLowerCase();
+    this._initRoute(str, startState);
 
     // init alreadyOn
     for (var i = 0; i < this._states.length; i++)
@@ -102,13 +112,16 @@ NFA.prototype.simulate = function(str) {
 
 
     for (var i = 0; i < str.length; i++) {
+
+        if (!this.symbolInAlphabet(str[i])) break;
+
         var c = str[i];
         // for (s on oldStates)
         for (var s = 0; s < oldStates.length; s++) {
             var aState = oldStates[s];
             for (var j = 0; j < this.move(aState, c).length(); j++) {
                 var moveState = this.move(aState, c).getObject(j);
-                if (!alreadyOn[moveState.id])
+                if (moveState && !alreadyOn[moveState.id])
                     this.addState(moveState);
             }
             oldStates.shift();
@@ -132,6 +145,47 @@ NFA.prototype.simulate = function(str) {
         console.log("YES");
     else
         console.log("NO");
+
+};
+
+// Returns the new combined state
+NFA.prototype.maybeCombineStates = function(states, symbol) {
+    if (states.length() > 1) {
+
+        // generate new state
+        var newName = "";
+        var isStart = false,
+            isFin = false;
+        for (var i = 0; i < states.length(); i++) {
+            var aState = states.getObject(i);
+            if (aState.name)
+                newName += aState.name;
+            if (aState.isStart()) isStart = true;
+            if (aState.isFin()) isFin = true;
+        }
+
+        // this is awkardly messy
+        // TODO: don't be so messy
+        var targetState = states.getObject(0);
+        this.generateState(targetState.cx, targetState.cy, newName, isStart, isFin);
+        var newestId = this._id - 1;
+        var newestState = g_SM.findState(newestId);
+        this.generateEdge(this._crntState, newestState, [symbol]);
+        var newestEdge = this._edges[this._edges.length - 1];
+        newestEdge.x1 = this._crntState.cx;
+        newestEdge.y1 = this._crntState.cy;
+        newestEdge.x2 = newestState.cx;
+        newestEdge.y2 = newestState.cy;
+        this._routeEdges.push(newestEdge);
+
+        return newestState;
+    }
+    else {
+        if (states.length() > 0) {
+            this._routeEdges.push(states.getObject(0).incomingEdges);
+            return states.getObject(0);
+        }            
+    }
 };
 
 
@@ -148,30 +202,38 @@ NFA.prototype.addState = function(s) {
 // Returns the set of states that you can go to when you're in
 // state and you read symbol.
 NFA.prototype.move = function(state, symbol) {
-    if (state)
-        return state.transition(symbol);
-    else 
-        return new Set();
+    var set = new Set();
+    if (state) {
+        // this set is the new state
+        this._crntState = this.maybeCombineStates(state.transition(symbol), symbol);
+        set.add(this._crntState);
+    }
+    return set;
 };
 
 /////////////////////////////////////////////////////////
 
-var testNfa = new NFA();
 
-// Remember to make alphabet manually when testing/debugging.
-testNfa.alphabet = ['a', 'b', 'eps'];
+var nfaTest = function() {
+    var testNfa = new NFA();
 
-testNfa.generateState(0, 0, 'A', true, false);
-testNfa.generateState(0, 0, 'B', false, true);
-testNfa.generateState(0, 0, 'C', false, true);
+    // Remember to make alphabet manually when testing/debugging.
+    testNfa.alphabet = ['a', 'b', 'eps'];
 
-testNfa.generateEdge(testNfa.findState('A'), testNfa.findState('B'), ['a', 'b', 'eps']);
-testNfa.generateEdge(testNfa.findState('A'), testNfa.findState('C'), ['a']);
+    testNfa.generateState(0, 0, 'A', true, false);
+    testNfa.generateState(0, 0, 'B', false, true);
+    testNfa.generateState(0, 0, 'C', false, true);
 
-testNfa.updateTransTable();
+    testNfa.generateEdge(testNfa.findState('A'), testNfa.findState('B'), ['a', 'b', 'eps']);
+    testNfa.generateEdge(testNfa.findState('A'), testNfa.findState('C'), ['a']);
 
-var transTableData = testNfa.dumpTransTable();
-for (var i = 0; i < transTableData.length; i++)
-    console.log(transTableData[i]);
+    testNfa.updateTransTable();
 
-testNfa.simulate(['a']);
+    var transTableData = testNfa.dumpTransTable();
+    for (var i = 0; i < transTableData.length; i++)
+        console.log(transTableData[i]);
+
+    testNfa.simulate(['a']);
+};
+
+//nfaTest();

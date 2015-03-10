@@ -32,7 +32,7 @@ SM.prototype.generateState = function(cx, cy, name, start, fin) {
     });
 
     this._states.push(state);
-    this._id ++;
+    this._id++;
 
     // Only possible to have one starting state.
     if (start && !this._startingState) this._startingState = state;
@@ -62,13 +62,11 @@ SM.prototype.generateEdge = function(fromState, toState, symbols) {
 // Pre : name is a String
 // Return value : A State with the name name,
 //                if such a State exists.
-SM.prototype.findState = function(name) {
-    for (var i in this._states) {
-        if (this._states[i].name === name) {
-            return this._states[i];
-        }
-    }
-    console.log('No state with that name exists');
+SM.prototype.findState = function(id) {
+    for (var state of this._states)
+        if (state.id === id)
+            return state;
+    console.log('No state with that id exists');
     return false;
 };
 

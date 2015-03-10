@@ -28,7 +28,7 @@ DFA.prototype = new SM();
 // Post : _routes and _crntStates have been
 //        initialized for next evaluation of a String.
 DFA.prototype._initRoute = function(str, startState) {
-    this._crntState = this.findState(startState.name);    // starting state
+    this._crntState = this.findState(startState.id);    // starting state
     this._routeStr = str + ' |';
     this._routeEdges = [];
 };
@@ -95,55 +95,43 @@ DFA.prototype.addAcceptance = function() {
         this._routeStr += ' ' + this._crntState.name + ' : NOT Accepted';
 };
 
+var testDfa = function() {
+    // DFA
+    // L = (a(a + b)) + (b(a + b))
+    
+    var testDfa = new DFA();
 
-// DFA
-// L = (a(a + b)) + (b(a + b))
-/*
-var testDfa = new DFA();
+    testDfa.alphabet = ['a', 'b'];
 
-testDfa.alphabet = ['a', 'b'];
+    testDfa.generateState('q0', true, false);
+    testDfa.generateState('q1', false, false);
+    testDfa.generateState('q2', false, false);
+    testDfa.generateState('qf', false, true);
 
-testDfa.generateState('q0', true, false);
-testDfa.generateState('q1', false, false);
-testDfa.generateState('q2', false, false);
-testDfa.generateState('qf', false, true);
+    testDfa.generateEdge(testDfa.findState('q0'), testDfa.findState('q1'), ['a']);
+    testDfa.generateEdge(testDfa.findState('q0'), testDfa.findState('q2'), ['b']);
+    testDfa.generateEdge(testDfa.findState('q1'), testDfa.findState('qf'), ['a', 'b']);
+    testDfa.generateEdge(testDfa.findState('q2'), testDfa.findState('qf'), ['a', 'b']);
 
-testDfa.generateEdge(testDfa.findState('q0'), testDfa.findState('q1'), ['a']);
-testDfa.generateEdge(testDfa.findState('q0'), testDfa.findState('q2'), ['b']);
-testDfa.generateEdge(testDfa.findState('q1'), testDfa.findState('qf'), ['a', 'b']);
-testDfa.generateEdge(testDfa.findState('q2'), testDfa.findState('qf'), ['a', 'b']);
+    // Trash state
+    testDfa.generateState('qTrash', false, false);
+    testDfa.generateEdge(testDfa.findState('qf'), testDfa.findState('qTrash'), ['a', 'b']);
+    testDfa.generateEdge(testDfa.findState('qTrash'), testDfa.findState('qTrash'), ['a', 'b']);
 
-// Trash state
-testDfa.generateState('qTrash', false, false);
-testDfa.generateEdge(testDfa.findState('qf'), testDfa.findState('qTrash'), ['a', 'b']);
-testDfa.generateEdge(testDfa.findState('qTrash'), testDfa.findState('qTrash'), ['a', 'b']);
+    // Accepted
+    testDfa.evalString('aa');
+    testDfa.evalString('ab');
+    testDfa.evalString('ba');
+    testDfa.evalString('bb');
+    testDfa.evalString('AB');
 
-// Accepted
-testDfa.evalString('aa');
-testDfa.evalString('ab');
-testDfa.evalString('ba');
-testDfa.evalString('bb');
-testDfa.evalString('AB');
+    // NOT Accepted
+    testDfa.evalString('aaa');
+    testDfa.evalString('bab');
+    testDfa.evalString('aaaaaaa');
 
-// NOT Accepted
-testDfa.evalString('aaa');
-testDfa.evalString('bab');
-testDfa.evalString('aaaaaaa');
+    // Wrong input
+    testDfa.evalString('ac');
+};
 
-// Wrong input
-testDfa.evalString('ac');
-*/
-
-/*
-Output from DFA above.
-
-aa |q0 -> q1 ->  qf : Accepted
-ab |q0 -> q1 ->  qf : Accepted
-ba |q0 -> q2 ->  qf : Accepted
-bb |q0 -> q2 ->  qf : Accepted
-ab |q0 -> q1 ->  qf : Accepted
-aaa |q0 -> q1 -> qf ->  qTrash : NOT Accepted
-bab |q0 -> q2 -> qf ->  qTrash : NOT Accepted
-aaaaaaa |q0 -> q1 -> qf -> qTrash -> qTrash -> qTrash -> qTrash ->  qTrash : NOT Accepted
-ac |q0 ->  Input Error: c not in alphabet of DFA q1 : NOT Accepted
-*/
+//testDfa();

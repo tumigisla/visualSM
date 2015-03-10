@@ -51,7 +51,6 @@ var draw = {
     // Pre : type is the string 'state' or 'edge'
     // Post : All symbols have been printed starting at x.
     printLetters : function(ctx, symbols, x, y, type) {
-        console.log(type);
         if (type !== 'state' && type !== 'edge') return;
         ctx.font = type === 'state' ? 'bold 25px Arial' : 'bold 15px Arial';
 
