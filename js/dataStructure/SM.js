@@ -58,6 +58,15 @@ SM.prototype.generateEdge = function(fromState, toState, symbols) {
     if (toState) toState.incomingEdges.push(edge);
 };
 
+// Usage : SM.removeEdge(edge)
+// Pre : edge is an Edge.
+// Post : edge has been removed from this
+//        state machine's edges.
+SM.prototype.removeEdge = function(edge) {
+    var index = this._edges.indexOf(edge);
+    this._edges.splice(index, 1);
+};
+
 // Usage : SM.findState(name);
 // Pre : name is a String
 // Return value : A State with the name name,

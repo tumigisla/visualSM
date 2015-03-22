@@ -95,14 +95,18 @@ var visualSM = {
 
         this.maybeUpdateAlphabet(newEdge.symbols);
 
-        var clampCoords = newEdge.clampToState(x, y, toState);
-        newEdge.updateFinCoords(clampCoords[0], clampCoords[1]);
+        if (newEdge.toState) {
+            var clampCoords = newEdge.clampToState(x, y, toState);
+            newEdge.updateFinCoords(clampCoords[0], clampCoords[1]);
 
-        // Update the ingoing state so that it's
-        // aware of it's incoming edge.
-        newEdge.toState.incomingEdges.push(newEdge);
+            // Update the ingoing state so that it's
+            // aware of it's incoming edge.
+            newEdge.toState.incomingEdges.push(newEdge);
 
-        this.addToStats(newEdge);
+            this.addToStats(newEdge);
+        }
+        else
+            g_SM.removeEdge(newEdge);
      },
 
     // Give attributes to state/edge.
@@ -158,6 +162,7 @@ var visualSM = {
 
     evaluate : function() {
         var evalStr = this.addAttr('evalStr');
+        //g_SM.evalString(evalStr);
         g_SM.simulate(evalStr);
 
         g_routeCircles.unshift(new RouteCircle());

@@ -10,10 +10,13 @@ RouteCircle.prototype.getRouteEdges = function() {
 	this.routeEdges = g_SM._routeEdges;
 	this.routePoints = [];
 	for (var i = 0; i < this.routeEdges.length; i++) {
-		this.routeEdges[i].updateLinePoints(100);
-		for (var j = 0; j < this.routeEdges[i].points.length; j++)
-			// add as first element
-			this.routePoints.unshift(this.routeEdges[i].points[j]);
+		console.log(this.routeEdges[i]);
+		if (this.routeEdges[i][0]) { // Tekka betur a þessu
+			this.routeEdges[i][0].updateLinePoints(100);
+			for (var j = 0; j < this.routeEdges[i][0].points.length; j++)
+				// add as first element
+				this.routePoints.unshift(this.routeEdges[i][0].points[j]);
+		}
 	}
 };
 
