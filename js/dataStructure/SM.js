@@ -79,6 +79,18 @@ SM.prototype.findState = function(id) {
     return false;
 };
 
+// Usage : SM.findStateByName(name);
+// Pre : name is a String, and a name of some State.
+// Return value : A State with the name name, 
+//                if it exists.
+SM.prototype.findStateByName = function(name) {
+    for (var state of this._states)
+        if (state.name === name)
+            return state;
+    console.log('No state with that name exists');
+    return false;
+};
+
 // Usage : SM.findStartState();
 // Return value : The starting state, if it exists.
 SM.prototype.findStartState = function() {

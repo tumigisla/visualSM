@@ -1,104 +1,86 @@
 /*
- A single State in a SM.
- It has a name for the Edges to recognize,
- and can be a Starting State, a Final State or
- neither of those.
+ An Edge connecting fromState
+ and toState.
 
- A State has an array of both Incoming Edges
- and Outgoing Edges, indicating possible transitions
- from the State.
+ symbols is an array of possible
+ transitions from fromState to toState.
 */
 
 // Usage :
-//  new State({
-//      cx   : Number,
-//      cy   : Number,
-//      name : String,
-//      start : Boolean,
-//      fin : Boolean
+//  new Edge({
+//      fromState : State,
+//      toState : State,
+//      symbols : [String]
 //  });
-function State(descr) {
+function Edge(descr) {
     for (var property in descr) {
         this[property] = descr[property];
     }
-    this.incomingEdges = [];
-    this.outgoingEdges = [];
-
-    this.radius = 25;
-    this.isSelected = false;
 }
-
-// Usage : State.psblTrans(str);
-// Return value : The Edge that's
-//                possible to move along in the transition
-//                to the new State.
-State.prototype.psblTrans = function(str) {
-    for (var i = 0; i < this.outgoingEdges.length; i++)
-        if (util.contains(this.outgoingEdges[i].symbols, str))
-            return this.outgoingEdges[i];
-};
-
-// TODO : combine this function and the psblTrans function from above.
-// Always returns an object of type Set.
-State.prototype.transition = function(str) {
-    var transStates = new Set();
-    for (var i = 0; i < this.outgoingEdges.length; i++) {
-        var anOutgoingEdge = this.outgoingEdges[i];
-        if (util.contains(anOutgoingEdge.symbols, str))
-            transStates.add(anOutgoingEdge.toState);
-    }
-    return transStates; // A set of states or the empty set.
-};
-
-// Usage : State.isStart();
-// Return value : True if State is a starting position.
-State.prototype.isStart = function() {
-    return this.start;
-};
-
-// Usage : State.isFin();
-// Return value : True if State is a final position.
-State.prototype.isFin = function() {
-    return this.fin;
-};
 
 
 // Interaction
 
-State.prototype.updateCoords = function(x, y) {
-    if (this.isInCanvas) {
-        this.cx = x;
-        this.cy = y;
+// No return value. Updates the points on this
+// Edge.
+Edge.prototype.updateLinePoints = function(frames) {
+    var dx = this.x2 - this.x1,
+        dy = this.y2 - this.y1,
+        length = Math.sqrt(util.square(dx) + util.square(dy));
+
+    var incrX = dx / frames,
+        incrY = dy / frames;
+
+    this.points = [];
+
+    this.points.push({x : this.x1, y : this.y1});
+
+    for (var i = 0; i < frames; i++) {
+        this.points.push({
+            x : this.x1 + (incrX * i),
+            y : this.y1 + (incrY * i)
+        });
+    }
+
+    this.points.push({x : this.x2, y : this.y2});
+};
+
+Edge.prototype.updateStartCoords = function(x, y) {
+    this.x1 = x;
+    this.y1 = y;
+};
+
+Edge.prototype.updateFinCoords = function(x, y) {
+    this.x2 = x;
+    this.y2 = y;
+};
+
+Edge.prototype.clampToState = function(x, y, state) {
+    if (x >= state.cx) x = state.cx + state.radius; // edge end to right of state
+    else if (x < state.cx) x = state.cx - state.radius; // edge end to left of state
+    y = state.cy;
+    return [x, y];
+};
+
+Edge.prototype.update = function(du) {
+    if (this.fromState) {
+        var clampStartCoords = this.clampToState(this.x1, this.y1, this.fromState);
+        this.x1 = clampStartCoords[0];
+        this.y1 = clampStartCoords[1];
+    }
+
+    if (this.toState) {
+        var clampFinCoords = this.clampToState(this.x2, this.y2, this.toState);
+        this.x2 = clampFinCoords[0];
+        this.y2 = clampFinCoords[1];
     }
 };
 
-// Fix this, is NOT working.
-State.prototype.isInCanvas = function() {
-    var canvasWidth = g_canvas.width,
-        canvasHeight = g_canvas.height;
+Edge.prototype.render = function(ctx) {
+    draw.edge(ctx, this.x1, this.y1, this.x2, this.y2);
 
-    var cx = this.cx,
-        cy = this.cy,
-        rad = this.radius;
-
-    var inLeftBound = cx - rad > 0,
-        inTopBound = cy - rad > 0,
-        inRightBound = cx + rad < canvasWidth,
-        inBtmBound = cy + rad < canvasHeight;
-
-    return inLeftBound && inTopBound && inRightBound && inBtmBound;
-};
-
-State.prototype.update = function(du) {
-    if (this.isSelected)
-        this.updateCoords(inputs.mouse.X, inputs.mouse.Y);
-
-};
-
-State.prototype.render = function(ctx) {
-    draw.state(ctx, this.cx, this.cy, this.radius,
-               this.isSelected, this.isStart(), this.isFin());
-
-    if (this.name)
-        draw.printLetters(ctx, [this.name], this.cx - 9, this.cy + 7, 'state');
+    var dx = this.x2 - this.x1,
+        dy = this.y2 - this.y1;
+    if (this.symbols)
+        draw.printLetters(ctx, this.symbols, this.x1 + dx/2, this.y1 + ((dy/2) - 20), 'edge');
 };

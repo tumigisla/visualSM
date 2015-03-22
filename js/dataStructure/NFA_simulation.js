@@ -38,17 +38,25 @@ NFA.prototype.dumpTransTable = function() {
     return dumpData;
 };
 
-// Set of NFA states reachable from and NFA state
+NFA.prototype._initRoute = function(str, startState) {
+    this._crntState = this.findState(startState.name);
+    this._routeStr = str + ' |';
+    this._routeEdges = [];
+};
+
+// Set of NFA states reachable from an NFA state
 // on eps-transitions alone.
 // Pre : state is an instance of the State object.
 NFA.prototype.epsClosureState = function(state) {
     var epsClosureS = new Set();
     var Dstates = [state];
+    
     while (Dstates.length > 0) {
         var T = Dstates.pop();
-        for (var a = 0; a < this.alphabet.length; a++) { // for each input symbol
-            var anInputSymbol = this.alphabet[a];
-            var U = this.epsClosureSet(this.move(T, anInputSymbol));
+     
+        for (var symbol of this.alphabet) {
+            var U = this.epsClosureSet(this.move(T, symbol));
+     
             if (!util.contains(Dstates, U))
                 for (var i = 0; i < U.length(); i++) {
                     Dstates.push(U[i]);
@@ -142,7 +150,7 @@ NFA.prototype.addState = function(s) {
         var aState = this.move(s, 'eps')[i];
         if (!alreadyOn[aState.id])
             this.addState(aState);
-    }
+    }   
 };
 
 // Returns the set of states that you can go to when you're in
@@ -161,19 +169,19 @@ var testNfa = new NFA();
 // Remember to make alphabet manually when testing/debugging.
 testNfa.alphabet = ['a', 'b', 'eps'];
 
-var states = [];
-
 testNfa.generateState(0, 0, 'A', true, false);
 testNfa.generateState(0, 0, 'B', false, true);
-testNfa.generateState(0, 0, 'C', false, true);
+testNfa.generateState(0, 0, 'C', false, false);
 
-testNfa.generateEdge(testNfa.findStateByName('A'), testNfa.findStateByName('B'), ['a', 'b', 'eps']);
-testNfa.generateEdge(testNfa.findStateByName('A'), testNfa.findStateByName('C'), ['a']);
+testNfa.generateEdge(testNfa.findState('A'), testNfa.findState('B'), ['a', 'b', 'eps']);
+testNfa.generateEdge(testNfa.findState('A'), testNfa.findState('C'), ['']);
 
 testNfa.updateTransTable();
 
 var transTableData = testNfa.dumpTransTable();
 for (var i = 0; i < transTableData.length; i++)
     console.log(transTableData[i]);
+
+console.log(testNfa.epsClosureState(testNfa.findState('A')));
 
 testNfa.simulate(['a']);

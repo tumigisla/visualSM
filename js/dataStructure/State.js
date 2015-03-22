@@ -15,7 +15,8 @@
 //      cy   : Number,
 //      name : String,
 //      start : Boolean,
-//      fin : Boolean
+//      fin : Boolean,
+//      id : Number
 //  });
 function State(descr) {
     for (var property in descr) {
@@ -48,6 +49,12 @@ State.prototype.transition = function(str) {
             transStates.add(anOutgoingEdge.toState);
     }
     return transStates; // A set of states or the empty set.
+};
+
+// Usage : State.getId();
+// Return value: the id of the state.
+State.prototype.getId = function() {
+    return this.id;
 };
 
 // Usage : State.isStart();

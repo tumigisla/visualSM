@@ -3,7 +3,7 @@ var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
 
 //var g_SM = new DFA(); // make this more general
-var g_SM = new NFA();
+var g_SM = new DFA();
 
 var g_routeCircles = [];
 
@@ -163,7 +163,7 @@ var visualSM = {
     evaluate : function() {
         var evalStr = this.addAttr('evalStr');
         //g_SM.evalString(evalStr);
-        g_SM.simulate(evalStr);
+        g_SM.evalString(evalStr);
 
         g_routeCircles.unshift(new RouteCircle());
         for (var rc of g_routeCircles)
