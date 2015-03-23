@@ -4,6 +4,13 @@ function NFA() {
 
 NFA.prototype = new SM();
 
+NFA.prototype._initRoute = function(str, startState) {
+    this._crntState = this.findState(startState.id);
+    this._routeStr = str + ' |';
+    this._allRouteStr = [this._routeStr];
+    this._routeEdges = [];
+};
+
 NFA.prototype.updateTransTable = function() {
     for (var i = 0; i < this._states.length; i++) {
         var aState = this._states[i];
@@ -96,6 +103,10 @@ var alreadyOn = [],
 
 NFA.prototype.simulate = function(str) {
 
+    var startState = this.findStartState();
+    str = str.toLowerCase();
+    this._initRoute(str, startState);
+
     // init alreadyOn
     for (var i = 0; i < this._states.length; i++)
         alreadyOn[this._states[i].id] = false;
@@ -185,3 +196,4 @@ for (var i = 0; i < transTableData.length; i++)
 console.log(testNfa.epsClosureState(testNfa.findState('A')));
 
 testNfa.simulate(['a']);
+console.log(oldStates);

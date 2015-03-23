@@ -95,7 +95,7 @@ DFA.prototype.addAcceptance = function() {
         this._routeStr += ' ' + this._crntState.name + ' : NOT Accepted';
 };
 
-var testDfa = function() {
+var DfaTest = function() {
     // DFA
     // L = (a(a + b)) + (b(a + b))
     
@@ -134,4 +134,4 @@ var testDfa = function() {
     testDfa.evalString('ac');
 };
 
-//testDfa();
+//DfaTest();

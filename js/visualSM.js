@@ -3,11 +3,11 @@ var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
 
 //var g_SM = new DFA(); // make this more general
-var g_SM = new DFA();
+var g_SM = new NFA();
 
-var g_routeCircles = [];
+//var g_routeCircles = [];
 
-var routeCircle = new RouteCircle();
+//var routeCircle = new RouteCircle();
 
 /////////////
 
@@ -159,15 +159,15 @@ var visualSM = {
         element.appendChild(listItem);
     },
 
-
     evaluate : function() {
         var evalStr = this.addAttr('evalStr');
-        //g_SM.evalString(evalStr);
-        g_SM.evalString(evalStr);
+        //g_SM.evalString(evalStr); // for DFA evaluation
+        g_SM.simulate(evalStr); // for NFA evaluation
 
-        g_routeCircles.unshift(new RouteCircle());
+        /*g_routeCircles.unshift(new RouteCircle());
         for (var rc of g_routeCircles)
-            rc.getRouteEdges();
+            rc.getRouteEdges(0);    // for DFA evaluation
+        */
     }
 
     

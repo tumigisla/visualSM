@@ -1,22 +1,17 @@
 function RouteCircle() {
 	this.routePoints = [];
 	this.routeBuffer = 120;
-	this.routeEdges = [];
 
 	this.shouldRender = false;
 };
 
-RouteCircle.prototype.getRouteEdges = function() {
-	this.routeEdges = g_SM._routeEdges;
+RouteCircle.prototype.getRouteEdges = function(routeBranch) {
 	this.routePoints = [];
-	for (var i = 0; i < this.routeEdges.length; i++) {
-		console.log(this.routeEdges[i]);
-		if (this.routeEdges[i]) { // Tekka betur a þessu
-			this.routeEdges[i].updateLinePoints(100);
-			for (var j = 0; j < this.routeEdges[i].points.length; j++)
-				// add as first element
-				this.routePoints.unshift(this.routeEdges[i].points[j]);
-		}
+	for (var i = 0; i < routeBranch.length; i++) {
+		var rE = routeBranch[i];
+		rE.updateLinePoints(100);
+		for (var rP of rE.points)
+			this.routePoints.unshift(rP);
 	}
 };
 

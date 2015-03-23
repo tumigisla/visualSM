@@ -1,8 +1,17 @@
+var g_routeCircles = [];
+
 function NFA() {
     this._transTable = {};
 }
 
 NFA.prototype = new SM();
+
+NFA.prototype._initRoute = function(str, startState) {
+    this._crntState = this.findState(startState.id);    // starting state
+    this._routeStrings = [str + ' |'];
+    this._routeEdges = [];
+};
+
 
 NFA.prototype.updateTransTable = function() {
     for (var i = 0; i < this._states.length; i++) {
@@ -86,7 +95,23 @@ var alreadyOn = [],
     oldStates = [],
     newStates = [];
 
+// str is an array
 NFA.prototype.simulate = function(str) {
+
+    var startState = this.findStartState();
+    for (var s of str)
+        s = s.toLowerCase();
+    this._initRoute(str[0], startState);
+
+    // Add all edges from the starting state to the 
+    // route edges.
+    for (var edge of this._edges) {
+        var firstSymbol = str[0];
+        if (edge.fromState === startState && util.contains(edge.symbols, firstSymbol)) {
+            this._routeEdges.push([edge]);
+            //console.log(this._routeEdges);
+        }
+    }
 
     // init alreadyOn
     for (var i = 0; i < this._states.length; i++)
@@ -96,21 +121,60 @@ NFA.prototype.simulate = function(str) {
     for (var i = 0; i < epsClosureStart.length(); i++) {
         var aState = epsClosureStart.getObject(i);
         oldStates.push(aState);
+        // adding a routeCircle
+        //g_routeCircles.push(new RouteCircle());
+        //index of current string.
+        //g_routeCircles[g_routeCircles.length - 1].getRouteEdges(i);
+        ////
         alreadyOn[aState.id] = true;
         this.addState(aState);
     }
 
 
-    for (var i = 0; i < str.length; i++) {
-        var c = str[i];
+
         // for (s on oldStates)
-        for (var s = 0; s < oldStates.length; s++) {
-            var aState = oldStates[s];
-            for (var j = 0; j < this.move(aState, c).length(); j++) {
-                var moveState = this.move(aState, c).getObject(j);
-                if (!alreadyOn[moveState.id])
-                    this.addState(moveState);
+    for (var s = 0; s < oldStates.length; s++) {
+        var aState = oldStates[s];
+        for (var i = 0; i < str.length; i++) {
+            var c = str[i];
+            // A set of states
+            var movingStates = this.move(aState, c);
+
+            if (movingStates.length() > 1) {
+                // Make a new route branching from the latest one.
+                for (var rE of this._routeEdges)
+                    rE.push(movingStates.getObject(0));
+
+                for (var e = 1; e < movingStates.length(); e++) {
+                    var moveState = movingStates.getObject(e);
+                    for (var edge of this._edges)
+                        if (edge.fromState === aState && edge.toState === moveState) {
+                            this._routeEdges.push([edge]);
+                            //console.log(this._routeEdges);
+                        }
+                }
             }
+
+            else {
+                //console.log(movingStates.length(), c, aState);
+                for (var j = 0; j < this.move(aState, c).length(); j++) {
+                    var moveState = this.move(aState, c).getObject(j);
+
+                        for (var routeEdge of this._routeEdges) {
+                            for (var edge of this._edges)
+                                if (edge.fromState === aState && edge.toState === moveState) {
+                                    var latestEdge = routeEdge[routeEdge.length - 1];
+                                    if (edge !== latestEdge)
+                                        routeEdge.push(edge);
+                                    //console.log(this._routeEdges);
+                                }
+                        }
+
+                    if (!alreadyOn[moveState.id])
+                        this.addState(moveState);
+                }
+            }
+
             oldStates.shift();
         }
 
@@ -119,6 +183,11 @@ NFA.prototype.simulate = function(str) {
             var aState = newStates[s];
             newStates.shift();
             oldStates.push(aState);
+            // adding a routeCircle
+            //g_routeCircles.push(new RouteCircle());
+            //index of current string.
+            //g_routeCircles[g_routeCircles.length - 1].getRouteEdges(i); 
+            ////
             alreadyOn[aState.id] = false;
         }
     }
@@ -132,6 +201,22 @@ NFA.prototype.simulate = function(str) {
         console.log("YES");
     else
         console.log("NO");
+
+    
+    // Make route circles for this simulation.
+    for (var routeBranch of this._routeEdges) {
+        g_routeCircles.push(new RouteCircle());
+        g_routeCircles[g_routeCircles.length - 1].getRouteEdges(routeBranch);
+    }
+
+    console.log(this._routeEdges);
+    console.log(oldStates);
+
+    // Clear the route edges, make ready for next simulation / evaluation.
+    this._routeEdges = [];
+
+    // Erase this when using NFA for evaluation.
+    // g_routeCircles = [];
 };
 
 
@@ -148,32 +233,46 @@ NFA.prototype.addState = function(s) {
 // Returns the set of states that you can go to when you're in
 // state and you read symbol.
 NFA.prototype.move = function(state, symbol) {
-    if (state)
+    if (state) {
+        var psblStates = state.transition(symbol);
+        for (var i = 0; i < psblStates.length(); i++) {
+            var aState = psblStates.getObject(i);
+            for (var edge of this._edges)
+                if (edge.fromState === state && edge.toState === aState)
+                    1+1;
+                    // this._routeEdges.push(edge);
+        }
         return state.transition(symbol);
+    }
     else 
         return new Set();
 };
 
 /////////////////////////////////////////////////////////
 
-var testNfa = new NFA();
+var NfaTest = function() {
+    var testNfa = new NFA();
 
-// Remember to make alphabet manually when testing/debugging.
-testNfa.alphabet = ['a', 'b', 'eps'];
+    // Remember to make alphabet manually when testing/debugging.
+    testNfa.alphabet = ['a', 'b', 'eps'];
 
-var states = [];
+    var states = [];
 
-testNfa.generateState(0, 0, 'A', true, false);
-testNfa.generateState(0, 0, 'B', false, true);
-testNfa.generateState(0, 0, 'C', false, true);
+    testNfa.generateState(0, 0, 'A', true, false);
+    testNfa.generateState(0, 0, 'B', false, true);
+    testNfa.generateState(0, 0, 'C', false, true);
 
-testNfa.generateEdge(testNfa.findStateByName('A'), testNfa.findStateByName('B'), ['a', 'b', 'eps']);
-testNfa.generateEdge(testNfa.findStateByName('A'), testNfa.findStateByName('C'), ['a']);
+    testNfa.generateEdge(testNfa.findStateByName('A'), testNfa.findStateByName('B'), ['a', 'b', 'eps']);
+    testNfa.generateEdge(testNfa.findStateByName('A'), testNfa.findStateByName('C'), ['a']);
 
-testNfa.updateTransTable();
+    testNfa.updateTransTable();
 
-var transTableData = testNfa.dumpTransTable();
-for (var i = 0; i < transTableData.length; i++)
-    console.log(transTableData[i]);
+    var transTableData = testNfa.dumpTransTable();
+    for (var i = 0; i < transTableData.length; i++)
+        console.log(transTableData[i]);
 
-testNfa.simulate(['a']);
+    testNfa.simulate(['a']);
+    console.log(newStates);
+};
+
+//NfaTest();
