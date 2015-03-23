@@ -141,6 +141,7 @@ NFA.prototype.simulate = function(str) {
             var movingStates = this.move(aState, c);
 
             if (movingStates.length() > 1) {
+                console.log(movingStates.length(), c, aState);
                 // Make a new route branching from the latest one.
                 for (var rE of this._routeEdges)
                     rE.push(movingStates.getObject(0));
@@ -156,7 +157,7 @@ NFA.prototype.simulate = function(str) {
             }
 
             else {
-                //console.log(movingStates.length(), c, aState);
+                console.log(movingStates.length(), c, aState);
                 for (var j = 0; j < this.move(aState, c).length(); j++) {
                     var moveState = this.move(aState, c).getObject(j);
 
@@ -214,6 +215,9 @@ NFA.prototype.simulate = function(str) {
 
     // Clear the route edges, make ready for next simulation / evaluation.
     this._routeEdges = [];
+    alreadyOn = [];
+    newStates = [];
+    oldStates = [];
 
     // Erase this when using NFA for evaluation.
     // g_routeCircles = [];
