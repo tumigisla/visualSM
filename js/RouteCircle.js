@@ -9,9 +9,11 @@ RouteCircle.prototype.getRouteEdges = function(routeBranch) {
 	this.routePoints = [];
 	for (var i = 0; i < routeBranch.length; i++) {
 		var rE = routeBranch[i];
-		rE.updateLinePoints(100);
-		for (var rP of rE.points)
-			this.routePoints.unshift(rP);
+		if (rE) {
+			rE.updateLinePoints(100);
+			for (var rP of rE.points)
+				this.routePoints.unshift(rP);
+		}
 	}
 };
 
