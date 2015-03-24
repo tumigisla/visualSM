@@ -95,6 +95,8 @@ var alreadyOn = [],
     oldStates = [],
     newStates = [];
 
+var visitedStates = [];
+
 // str is an array
 NFA.prototype.simulate = function(str) {
 
@@ -108,21 +110,22 @@ NFA.prototype.simulate = function(str) {
             newStates.splice(index, 1);
             oldStates.push(s);
             alreadyOn[s.id] = false;
-
-            console.log("newStatesLoop", c);
-            console.log(newStates);
-            console.log(oldStates);
         }
 
     for (var i = 0; i < str.length; i++) {
 
         var c = str[i];
         
+        var index;
+
         for (var k = 0; k < oldStates.length; k++) {
+
             var s = oldStates[k];
             var moveSC = this.move(s, c);   // a set of states
             for (var j = 0; j < moveSC.length(); j++) {
+
                 var t = moveSC.getObject(j);    // a state
+
                 if (!alreadyOn[t.id])
                     this.addState(t);
             }
@@ -130,10 +133,6 @@ NFA.prototype.simulate = function(str) {
             var index = oldStates.indexOf(s);
             oldStates.splice(index, 1);
             --k;
-
-            console.log("oldStatesLoop");
-            console.log(newStates);
-            console.log(oldStates);
         }
 
         for (var k = 0; k < newStates.length; k++) {
@@ -143,18 +142,12 @@ NFA.prototype.simulate = function(str) {
             --k;
             oldStates.push(s);
             alreadyOn[s.id] = false;
-
-            console.log("newStatesLoop", c);
-            console.log(newStates);
-            console.log(oldStates);
         }
 
+        var oldStatesCopy = oldStates.slice(0);
+        visitedStates.push(oldStatesCopy);
+    
     }  
-
-    console.log("newStates", newStates);
-    console.log("oldStates", oldStates);
-    console.log("alreadyOn", alreadyOn);
-
 };
 
 
@@ -178,17 +171,35 @@ NFA.prototype.move = function(state, symbol) {
         return new Set();
 };
 
-// Has the side effect of returning the index of the latest
-// inserted routeEdge in this._routeEdges.
-NFA.prototype.addRouteEdge = function(fromState, toState) {
+
+
+
+/*
+NFA.prototype.OLD_addRouteEdge = function(fromState, toState) {
     var latestIndex = 0;
-    for (var edge of this._edges)
-        if (edge.fromState ===  fromState && edge.toState === toState)
-            for (var rE of this._routeEdges)
-                if (rE[rE.length - 1] === fromState)
-                    rE.push(toState);
+    for (var i = 0; i < this._edges.length; i++) {
+        var anEdge = this._edges[i];
+        console.log(anEdge, i);
+        if (anEdge.fromState === fromState && anEdge.toState === toState) {
+            for (var j = 0; j < this._routeEdges.length; j++) {
+                var rE = this._routeEdges[j];
+                if (rE.length === 0) {
+                    this._routeEdges[j].push(this._edges[i]);
+                    return latestIndex;
+                }
+                if (this._routeEdges[j][this._routeEdges[j].length - 1] === fromState) {
+                    this._routeEdges[j].push(this._edges[i]);
+                    latestIndex = j;
+                    return latestIndex;
+                }
+            }
+        }
+    }
+    var copy = this._routeEdges.slice(0);
+    console.log(copy);
     return latestIndex;
 };
+*/
 
 /////////////////////////////////////////////////////////
 

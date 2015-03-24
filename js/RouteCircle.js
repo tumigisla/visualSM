@@ -32,6 +32,7 @@ RouteCircle.prototype.update = function(du) {
 
 RouteCircle.prototype.render = function(ctx) {
 	if (this.shouldRender) {
+		// Bæta herna við current index.
 		var coords = this.routePoints.pop();
 		if (coords)
 			draw.routeCircle(ctx, coords.x, coords.y);
