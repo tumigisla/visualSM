@@ -147,7 +147,11 @@ NFA.prototype.simulate = function(str) {
         var oldStatesCopy = oldStates.slice(0);
         visitedStates.push(oldStatesCopy);
     
+
     }  
+    
+        this.addRouteEdges(s0);
+        this.addRouteCircles();
 };
 
 
@@ -172,34 +176,65 @@ NFA.prototype.move = function(state, symbol) {
 };
 
 
-
-
-/*
-NFA.prototype.OLD_addRouteEdge = function(fromState, toState) {
-    var latestIndex = 0;
-    for (var i = 0; i < this._edges.length; i++) {
-        var anEdge = this._edges[i];
-        console.log(anEdge, i);
-        if (anEdge.fromState === fromState && anEdge.toState === toState) {
-            for (var j = 0; j < this._routeEdges.length; j++) {
-                var rE = this._routeEdges[j];
-                if (rE.length === 0) {
-                    this._routeEdges[j].push(this._edges[i]);
-                    return latestIndex;
-                }
-                if (this._routeEdges[j][this._routeEdges[j].length - 1] === fromState) {
-                    this._routeEdges[j].push(this._edges[i]);
-                    latestIndex = j;
-                    return latestIndex;
+NFA.prototype.addRouteEdges = function(s0) {
+    for (var i = 0; i < visitedStates.length; i++) {
+        var v = visitedStates[i];
+        this._routeEdges.push([]); // Will be the ith element of routeEdges.
+        if (i === 0) {
+            // Check if there's  and edge from starting state 
+            // to any of the visited states.
+            for (var st of v) {
+                for (var edge of this._edges)
+                    if (edge.fromState === s0 && edge.toState === st)
+                        if (!util.contains(this._routeEdges[i], edge))
+                            // No duplicate edges.
+                            this._routeEdges[i].push(edge);
+            }
+        }
+        else if (i > 0) { // Last visited state is visitedStates[i - 1]
+            for (var st of v) {
+                // Check for edges between visitedStates[i - 1]
+                // and visitedStates[i]
+                for (var ovst of visitedStates[i - 1]) { // old visited states
+                    for (var edge of this._edges)
+                        if (edge.fromState === ovst && edge.toState === st)
+                            if (!util.contains(this._routeEdges[i], edge))
+                                // No duplicate edges.
+                                this._routeEdges[i].push(edge);
                 }
             }
         }
     }
-    var copy = this._routeEdges.slice(0);
-    console.log(copy);
-    return latestIndex;
 };
-*/
+
+
+
+NFA.prototype.addRouteCircles = function() {
+    var rC = new RouteCircle();
+    var rCP = rC.routePoints;
+
+    for (var i = 0; i < this._routeEdges.length; i++) {
+        var rE = this._routeEdges[i];
+
+        rCP.push([]);   // one set of edges between states (one transfer
+                        // between states in the animation)
+
+        for (var j = 0; j < rE.length; j++) {
+            var r = rE[j];
+
+            rCP[i].push([]);
+
+            r.updateLinePoints(100);
+
+            for (var p of r.points)
+                rCP[i][j].unshift(p);
+        }
+    }
+
+
+    g_routeCircles.push(rC);
+};
+
 
 /////////////////////////////////////////////////////////
 

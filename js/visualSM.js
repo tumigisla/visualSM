@@ -9,6 +9,8 @@ var g_SM = new NFA();
 
 //var routeCircle = new RouteCircle();
 
+var killRouteCircle = false;
+
 /////////////
 
 var visualSM = {
@@ -183,6 +185,11 @@ var updateSimulation = function(du) {
         states[i].update(du);
     for (var i = 0; i < edges.length; i++)
         edges[i].update(du);
+
+    if (killRouteCircle) {
+        g_routeCircles = [];
+        killRouteCircle = false;
+    }
 
     for (var rc of g_routeCircles) {
         if (!rc.isEmpty())
