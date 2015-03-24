@@ -149,17 +149,23 @@ NFA.prototype.simulate = function(str) {
     
 
     }  
-    
+
         this.addRouteEdges(s0);
         this.addRouteCircles();
+
+        visitedStates = [];
+        oldStates = [];
+        newStates = [];
+
 };
 
 
 NFA.prototype.addState = function(s) {
+
     newStates.push(s);
     alreadyOn[s.id] = true;
-    for (var i = 0; i < this.move(s, 'eps').length(); i++) {
-        var aState = this.move(s, 'eps')[i];
+    for (var i = 0; i < this.move(s, 'ð').length(); i++) {
+        var aState = this.move(s, 'ð').getObject(i);
         if (!alreadyOn[aState.id])
             this.addState(aState);
     }

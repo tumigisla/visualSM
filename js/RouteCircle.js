@@ -7,19 +7,6 @@ function RouteCircle() {
 	this.crntIndex = 0;
 };
 
-/*
-RouteCircle.prototype.getRouteEdges = function(routeBranch) {
-	this.routePoints = [];
-	for (var i = 0; i < routeBranch.length; i++) {
-		var rE = routeBranch[i];
-		if (rE) {
-			rE.updateLinePoints(100);
-			for (var rP of rE.points)
-				this.routePoints.unshift(rP);
-		}
-	}
-};
-*/
 
 RouteCircle.prototype.isEmpty = function() {
 	return this.routePoints.length === 0;
@@ -49,7 +36,7 @@ RouteCircle.prototype.render = function(ctx) {
 
 		if (this.crntIndex >= this.routePoints.length) {
 			this.shouldRender = false;
-			this.routePoints = [];
+			g_routeCircles = [];
 			killRouteCircle = true;
 			return;
 		}
