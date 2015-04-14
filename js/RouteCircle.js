@@ -5,6 +5,8 @@ function RouteCircle() {
 	this.shouldRender = false;
 
 	this.crntIndex = 0;
+
+	this.oldRoutePoints = [];
 };
 
 
@@ -36,14 +38,18 @@ RouteCircle.prototype.render = function(ctx) {
 
 		if (this.crntIndex >= this.routePoints.length) {
 			this.shouldRender = false;
-			g_routeCircles = [];
-			killRouteCircle = true;
+			//g_routeCircles = [];
+			//killRouteCircle = true;
+			this.routePoints = this.oldRoutePoints;
+			this.crntIndex = 0;
 			return;
 		}
 
 		for (var rp of this.routePoints[this.crntIndex]) {
 
 			var coords = rp.pop();
+
+			this.oldRoutePoints.push(coords);
 
 			if (coords)
 				draw.routeCircle(ctx, coords.x, coords.y);

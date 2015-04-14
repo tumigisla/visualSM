@@ -108,5 +108,12 @@ var util = {
             if (obj.hasOwnProperty(key)) size++;
         }
         return size;
+    },
+
+    hasUnmarkedStateSet : function(setArray) {
+        for (var i = 0; i < setArray.length; i++)
+            if (!setArray[i].isMarked)
+                return true;
+        return false;
     }
 };

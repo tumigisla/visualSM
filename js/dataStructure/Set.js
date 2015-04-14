@@ -1,5 +1,6 @@
 function Set() {
     this._objects = [];
+    this.isMarked = false;
 };
 
 // Makes sure there are no duplicates.

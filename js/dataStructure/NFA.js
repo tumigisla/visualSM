@@ -1,8 +1,10 @@
 var g_routeCircles = [];
 
-function NFA() {
-    this._transTable = {};
-}
+var eps = 'd';
+
+var startingEpsClos;
+
+function NFA() {}
 
 NFA.prototype = new SM();
 
@@ -12,84 +14,165 @@ NFA.prototype._initRoute = function(str, startState) {
     this._routeEdges = [];
 };
 
+NFA.prototype.extractStr = function(stateSet) {
+    var str = "";
+    for (var i = 0; i < stateSet.length(); i++) {
+        var aState = stateSet.getObject(i);
+        if (aState.name) str += aState.name + ',';        
+    }
+    return str;
+};
 
-NFA.prototype.updateTransTable = function() {
-    for (var i = 0; i < this._states.length; i++) {
-        var aState = this._states[i];
-        this._transTable[aState.id] = {};
-        for (var a = 0; a < this.alphabet.length; a++) {
-            var aSymbol = this.alphabet[a];
-            this._transTable[aState.id][aSymbol] = aState.transition(aSymbol);
+var DTran = [];
+
+NFA.prototype.maybeAddToDTran = function(T, U) {
+    if (U.length() > 0) {
+        var symbolsToAdd = [];
+        for (var edge of this._edges) {
+            if (T.contains(edge.fromState) &&
+                U.contains(edge.toState)) {
+                for (var sym of edge.symbols)
+                    if (!util.contains(symbolsToAdd, sym))
+                        symbolsToAdd.push(sym);
+            }
         }
+            
+        DTran.push([T, symbolsToAdd, U]);
     }
 };
 
-// Should print the correct transition table now.
-NFA.prototype.dumpTransTable = function() {
-    var dumpData = [];
-    var firstLine = "STATE \t ";
-    for (var i = 0; i < this.alphabet.length; i++)
-        firstLine += this.alphabet[i] + "\t\t";
-    dumpData.push(firstLine);
+NFA.prototype.epsClosState = function(state) {
+    var s0Set = new Set();
+    s0Set.add(state);
+    var Dstates = [this.epsClosSet(this.move(state, eps))];   // an array of sets
+    this.maybeAddToDTran(s0Set, this.epsClosSet(this.move(state, eps)));
 
-    for (var state = 0; state < util.objSize(this._transTable); state++) {
-        var aState = this._transTable[state];
-        var tmpStr = state + "\t\t";
-        for (var symbol = 0; symbol < this.alphabet.length; symbol++) {
-            var symbolSet = aState[this.alphabet[symbol]];
-            tmpStr += "{";
-            for (var i = 0; i < symbolSet.length(); i++) 
-                tmpStr += symbolSet.getObject(i).id + ", ";
-            tmpStr += "} \t";
+    while(util.hasUnmarkedStateSet(Dstates)) {
+        var T;
+        // mark T
+        for (var i = 0; i < Dstates.length; i++) {
+            if (!Dstates[i].isMarked) {
+                T = Dstates[i];
+                Dstates[i].isMarked = true;
+                break;
+            }
         }
-        dumpData.push(tmpStr);
-    }
-    return dumpData;
-};
 
-// Set of NFA states reachable from and NFA state
-// on eps-transitions alone.
-// Pre : state is an instance of the State object.
-NFA.prototype.epsClosureState = function(state) {
-    var epsClosureS = new Set();
-    var Dstates = [state];
-    while (Dstates.length > 0) {
-        var T = Dstates.pop();
-        for (var a = 0; a < this.alphabet.length; a++) { // for each input symbol
-            var anInputSymbol = this.alphabet[a];
-            var U = this.epsClosureSet(this.move(T, anInputSymbol));
-            if (!util.contains(Dstates, U))
-                for (var i = 0; i < U.length(); i++) {
-                    Dstates.push(U[i]);
-                    epsClosureS.add(U.getObject(i));
-                }
+        if (T.length() === 0) {
+            var index = Dstates.indexOf(T);
+            Dstates.splice(index, 1);
+            continue;
         }
-    }
-    return epsClosureS;
-};
 
-
-// Set of NFA states reachable from some NFA state
-// in the stateSet on eps-transitions alone.
-NFA.prototype.epsClosureSet = function(stateSet) {
-    var stack = [];
-    for (var i = 0; i < stateSet.length(); i++)
-        stack.push(stateSet.getObject(i));
-    var epsClosureT = stateSet;
-
-    while(stack.length > 0) {
-        var t = stack.pop();
-        var epsStateSet = this.move(t, 'eps');
-        for (var i = 0; i < epsStateSet.length(); i++) {
-            var u = epsStateSet.getObject(i);
-            if (!epsClosureT.contains(u)) {
-                epsClosureT.add(u);
-                stack.push(u);
+        // for each input symbol
+        for (var symbol of this.alphabet) {
+            var U = this.epsClosSet(this.moveFromSet(T, symbol));
+            if (!util.contains(Dstates, U)) {
+                // The state hasn't been added.
+                Dstates.push(U);
+                this.maybeAddToDTran(T, U);
             }
         }
     }
-    return epsClosureT;
+    Dstates.unshift(s0Set);
+    return Dstates;
 };
+
+NFA.prototype.epsClosSet = function(stateSet) {
+    var stack = [];
+    // Push all states onto stack.
+    if (stateSet.length() > 0)
+        for (var i = 0; i < stateSet.length(); i++)
+            stack.push(stateSet.getObject(i));
+    var epsClosT = stateSet;
+    while (stack.length !== 0) {
+        var topState = stack.pop();
+        var epsStates = this.move(topState, eps);
+        for (var j = 0; j < epsStates.length(); j++) {
+            var anEpsState = epsStates.getObject(j);
+            if (!epsClosT.contains(anEpsState)) {
+                epsClosT.add(anEpsState);
+                stack.push(anEpsState);
+            }
+        }
+    }
+    return epsClosT;
+};
+
+
+
+NFA.prototype.combineStates = function() {
+    /*
+        - delete all the current states and edges
+            (_states = []  _edges = [] finalStates = {empty set})
+
+        for (all things in DTran)
+            - make new state from 0th entry
+                -
+            - make new state from 2nd entry
+            - make edge from 0th entry state to
+              2nd entry state having the symbols
+              in the 1st entry
+
+    */
+
+    // Remove old states and edges.
+    this._states = [];
+    this._edges = [];
+    this.finalStates = new Set();
+
+    // Init new coords.
+    var cx = 100,
+        cy = 100;
+
+    for (var tran of DTran) {
+        var isStart, isFin;
+        var newStateName = "";
+
+        // new fromState
+        var fromStateSet = tran[0]; 
+        for (var i = 0; i < fromStateSet.length(); i++) {
+            var aState = fromStateSet.getObject(i);
+            isStart = aState.isStart();
+            isFin = aState.isFin();
+            if (aState.name) newStateName += aState.name;
+            else             newStateName += " ";
+        }
+        if (!this.findStateByName(newStateName))
+            this.generateState(cx, cy, newStateName, isStart, isFin);
+
+        var fromState = this.findStateByName(newStateName);
+
+        newStateName = "";
+
+        cx += 50;
+        cy += 50;
+
+        // new toState
+        var toStateSet = tran[2];
+        for (var i = 0; i < toStateSet.length(); i++) {
+            var aState = toStateSet.getObject(i);
+            isStart = aState.isStart();
+            isFin = aState.isFin();
+            if (aState.name) newStateName += aState.name;
+            else             newStateName += " ";               
+        }
+        if (!this.findStateByName(newStateName))
+            this.generateState(cx, cy, newStateName, isStart, isFin);
+
+        var toState = this.findStateByName(newStateName);
+
+        cx += 50;
+        cy += 50;
+
+        // new edge between fromState and toState
+        var edgeSymbols = tran[1];
+        this.generateEdge(fromState, toState, edgeSymbols);
+        var newEdge = this._edges[this._edges.length - 1];
+        this.initEdgeCoords(fromState, toState, newEdge);
+    }
+};
+
 
 var alreadyOn = [],
     oldStates = [],
@@ -150,22 +233,21 @@ NFA.prototype.simulate = function(str) {
 
     }  
 
-        this.addRouteEdges(s0);
-        this.addRouteCircles();
+    this.addRouteEdges(s0);
+    this.addRouteCircles();
 
-        visitedStates = [];
-        oldStates = [];
-        newStates = [];
+    visitedStates = [];
+    oldStates = [];
+    newStates = [];
 
 };
 
 
 NFA.prototype.addState = function(s) {
-
     newStates.push(s);
     alreadyOn[s.id] = true;
-    for (var i = 0; i < this.move(s, 'ð').length(); i++) {
-        var aState = this.move(s, 'ð').getObject(i);
+    for (var i = 0; i < this.move(s, eps).length(); i++) {
+        var aState = this.move(s, eps).getObject(i);
         if (!alreadyOn[aState.id])
             this.addState(aState);
     }
@@ -174,11 +256,22 @@ NFA.prototype.addState = function(s) {
 // Returns the set of states that you can go to when you're in
 // state and you read symbol.
 NFA.prototype.move = function(state, symbol) {
-    if (state) {
-        return state.transition(symbol);
+    if (state)  return state.transition(symbol);
+    else        return new Set();
+};
+
+// Returns the set of states that's possible to go to
+// from a given set of states(stateSet) when an input
+// symbol is read.
+NFA.prototype.moveFromSet = function(stateSet, symbol) {
+    var allToStates = new Set();
+    for (var i = 0; i < stateSet.length(); i++) {
+        var aState = stateSet.getObject(i);
+        var toStates = this.move(aState, symbol);
+        for (var j = 0; j < toStates.length(); j++)
+            allToStates.add(toStates.getObject(j));
     }
-    else 
-        return new Set();
+    return allToStates;
 };
 
 
@@ -237,36 +330,61 @@ NFA.prototype.addRouteCircles = function() {
         }
     }
 
-
     g_routeCircles.push(rC);
 };
 
+NFA.prototype.initEdgeCoords = function(fromState, toState, newEdge) {
+    // fromState
+    clampCoords = newEdge.clampToState(fromState.cx, fromState.cy, fromState);
+    newEdge.updateStartCoords(clampCoords[0], clampCoords[1]);
+    // toState
+    clampCoords = newEdge.clampToState(toState.cx, toState.cy, toState);
+    newEdge.updateFinCoords(clampCoords[0], clampCoords[1]);
+};
 
 /////////////////////////////////////////////////////////
 
-var NfaTest = function() {
-    var testNfa = new NFA();
+var testNfa;
 
-    // Remember to make alphabet manually when testing/debugging.
-    testNfa.alphabet = ['a', 'b', 'eps'];
+var NFATest = function() {
+    testNfa = new NFA();
 
-    var states = [];
+    var newEdge;
 
-    testNfa.generateState(0, 0, 'A', true, false);
-    testNfa.generateState(0, 0, 'B', false, true);
-    testNfa.generateState(0, 0, 'C', false, true);
+    testNfa.alphabet = ['a', 'b', eps];
 
-    testNfa.generateEdge(testNfa.findStateByName('A'), testNfa.findStateByName('B'), ['a', 'b', 'eps']);
-    testNfa.generateEdge(testNfa.findStateByName('A'), testNfa.findStateByName('C'), ['a']);
+    testNfa.generateState(50, 50, 'A', true, false);
+    testNfa.generateState(200, 50, 'B', false, false);
+    testNfa.generateState(200, 200, 'C', false, false);
+    testNfa.generateState(300, 100, 'E', false, false);
+    testNfa.generateState(400, 100, 'F', false, true)
 
-    testNfa.updateTransTable();
+    var stateA = testNfa.findStateByName('A'),
+        stateB = testNfa.findStateByName('B'),
+        stateC = testNfa.findStateByName('C'),
+        stateE = testNfa.findStateByName('E'),
+        stateF = testNfa.findStateByName('F');
 
-    var transTableData = testNfa.dumpTransTable();
-    for (var i = 0; i < transTableData.length; i++)
-        console.log(transTableData[i]);
+    testNfa.generateEdge(stateA, stateB, ['a', 'b', eps]);
+    newEdge = testNfa._edges[testNfa._edges.length - 1];
+    testNfa.initEdgeCoords(stateA, stateB, newEdge);
 
-    testNfa.simulate(['a']);
-    console.log(newStates);
+    testNfa.generateEdge(stateA, stateC, ['a', eps]);
+    newEdge = testNfa._edges[testNfa._edges.length - 1];
+    testNfa.initEdgeCoords(stateA, stateC, newEdge);
+
+    testNfa.generateEdge(stateC, stateE, ['a']);
+    newEdge = testNfa._edges[testNfa._edges.length - 1];
+    testNfa.initEdgeCoords(stateC, stateE, newEdge);
+
+    testNfa.generateEdge(stateE, stateF, ['a']);
+    newEdge = testNfa._edges[testNfa._edges.length - 1];
+    testNfa.initEdgeCoords(stateE, stateF, newEdge);    
+
+    startingEpsClos = testNfa.epsClosState(stateA);
+
+    console.log(startingEpsClos);
+    console.log(DTran);
 };
 
-//NfaTest();
+NFATest();

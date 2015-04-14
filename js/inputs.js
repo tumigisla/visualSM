@@ -70,9 +70,9 @@ var inputs = {
 
     mouseMove : function(e) { inputs.updateMouseCoords(e); },
 
-    evalHandle : function() {
-        visualSM.evaluate();
-    }
+    evalHandle : function() { visualSM.evaluate(); },
+
+    combineStatesHandle : function() { g_SM.combineStates(); }
 
 
 };
@@ -87,3 +87,4 @@ window.addEventListener("mouseup", inputs.mouseUp);
 window.addEventListener("mousemove", inputs.mouseMove);
 
 document.getElementById("evalBtn").addEventListener("click", inputs.evalHandle);
+document.getElementById("combineStatesBtn").addEventListener("click", inputs.combineStatesHandle);
