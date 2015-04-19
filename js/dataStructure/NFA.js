@@ -233,11 +233,18 @@ NFA.prototype.simulate = function(str) {
 
     this.addRouteEdges(s0);
     this.addRouteCircles();
-    
+
+    var oldStatesSet = new Set();
+    for (var st of oldStates)
+        oldStatesSet.add(st);
+
+    console.log(util.areInterSecting(oldStatesSet, this.finalStates));
+
+    /*
     visitedStates = [];
     oldStates = [];
     newStates = [];
-    
+    */
 };
 
 
@@ -282,11 +289,17 @@ NFA.prototype.addRouteEdges = function(s0) {
             // Check if there's  and edge from starting state 
             // to any of the visited states.
             for (var st of v) {
-                for (var edge of this._edges)
-                    if (edge.fromState === s0 && edge.toState === st)
+                for (var edge of this._edges) {
+                    if (edge.fromState === s0 && edge.toState === st) {
                         if (!util.contains(this._routeEdges[i], edge))
                             // No duplicate edges.
                             this._routeEdges[i].push(edge);
+                    }
+                    else if (edge.toState === st){
+                        console.log('SPLICING');
+                        visitedStates.splice(i+1, 0, [st]);
+                    }
+                }
             }
         }
         else if (i > 0) { // Last visited state is visitedStates[i - 1]
