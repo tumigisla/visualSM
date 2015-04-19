@@ -40,7 +40,7 @@ RouteCircle.prototype.render = function(ctx) {
 			this.shouldRender = false;
 			//g_routeCircles = [];
 			//killRouteCircle = true;
-			this.routePoints = this.oldRoutePoints;
+			//this.routePoints = this.oldRoutePoints;
 			this.crntIndex = 0;
 			return;
 		}

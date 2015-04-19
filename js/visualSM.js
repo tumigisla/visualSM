@@ -196,7 +196,7 @@ var updateSimulation = function(du) {
             rc.update(du);
         else
             // remove it.
-            1+1;//g_routeCircles.pop();
+            g_routeCircles.pop();
     }
 };
 
