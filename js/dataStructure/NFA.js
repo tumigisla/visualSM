@@ -185,7 +185,7 @@ NFA.prototype.simulate = function(str) {
     this._routeEdges = [];
 
     var s0 = this.findStartState();
-    s0.distFromStart = 0;
+    s0.depths.push(0);
     var epsClosStates = this.epsClosState(s0);
     for (var i = 0; i < epsClosStates.length(); i++)
         this.addState(epsClosStates.getObject(i));
@@ -197,8 +197,8 @@ NFA.prototype.simulate = function(str) {
             alreadyOn[s.id] = false;
     }
 
-    for (var i = 0; i < str.length; i++) {
 
+    for (var i = 0; i < str.length; i++) {
         var c = str[i];
 
         if (!(util.contains(this.alphabet, c)) ||
@@ -235,24 +235,31 @@ NFA.prototype.simulate = function(str) {
         var oldStatesCopy = oldStates.slice(0);
         for (var ost of oldStatesCopy)
             tmpVisitedStates.push(ost);
-        //visitedStates.push(oldStatesCopy);
     }  
 
     // Compute all the distances from the starting state (root).
-    for (var st of this._states) {
+    for (var st of tmpVisitedStates) {
         for (var edge of this._edges) {
-            if (edge.fromState === st)
-                edge.toState.distFromStart = edge.fromState.distFromStart + 1;
-        }
+            if (edge.toState === st) {
+                var fsDepths = edge.fromState.depths;
+                var tsDepths = edge.toState.depths;
+                var latestDepth = fsDepths[fsDepths.length - 1];
+                tsDepths.push(latestDepth + 1);
+            }
+        }   
     }
 
+    // Add states in the correct ordering to the visitedStates array.
     for (var st of tmpVisitedStates) {
-        var index = st.distFromStart;
+        if (!st.depths.length > 0) break;
+        var index = st.depths.shift();
+        console.log(index);
         if (visitedStates[index])
             visitedStates[index].push(st);
         else
             visitedStates[index] = [st];
     }
+
 
     // Clean up the array.
     for (var i = 0; i < visitedStates.length; i++) {
@@ -261,6 +268,14 @@ NFA.prototype.simulate = function(str) {
             i--;
         }
     }
+    
+    if (util.contains(visitedStates[0], s0)) {
+        var index = visitedStates[0].indexOf(s0);
+        visitedStates[0].splice(index, 1);
+    }
+
+    if (visitedStates[0].length === 0)
+        visitedStates.shift();
 
     this.addRouteEdges(s0);
     this.addRouteCircles();
@@ -271,11 +286,12 @@ NFA.prototype.simulate = function(str) {
         oldStatesSet.add(st);
 
     console.log(util.areInterSecting(oldStatesSet, this.finalStates));
-    
+
     visitedStates = [];
     oldStates = [];
     newStates = [];
-    
+    tmpVisitedStates = [];
+
 };
 
 
@@ -326,14 +342,6 @@ NFA.prototype.addRouteEdges = function(s0) {
                         if (!util.contains(this._routeEdges[i], edge))
                             // No duplicate edges.
                             this._routeEdges[i].push(edge);
-                    }
-                    else if (edge.toState === st){
-                        console.log('SPLICING');
-                        //visitedStates.splice(i+1, 0, [st]);
-                        if (visitedStates[i+2] && util.contains(visitedStates[i+2], st)) {
-                            var index = visitedStates[i+2].indexOf(st);
-                            //visitedStates[i+2].splice(index,1);
-                        }
                     }
                 }
             }

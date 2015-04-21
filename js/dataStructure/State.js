@@ -25,7 +25,9 @@ function State(descr) {
     this.incomingEdges = [];
     this.outgoingEdges = [];
 
-    this.radius = 25;
+    this.depths = [];
+
+    this.radius = 20 + 5 * (this.name.length);
     this.isSelected = false;
 }
 
