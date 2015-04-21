@@ -176,7 +176,8 @@ var alreadyOn = [],
     oldStates = [],
     newStates = [];
 
-var visitedStates = [];
+var visitedStates = [],
+    tmpVisitedStates = [];
 
 // str is an array
 NFA.prototype.simulate = function(str) {
@@ -184,19 +185,25 @@ NFA.prototype.simulate = function(str) {
     this._routeEdges = [];
 
     var s0 = this.findStartState();
-    this.addState(s0);
+    s0.distFromStart = 0;
+    var epsClosStates = this.epsClosState(s0);
+    for (var i = 0; i < epsClosStates.length(); i++)
+        this.addState(epsClosStates.getObject(i));
 
     for (var s of newStates) {
             var index = newStates.indexOf(s);
             newStates.splice(index, 1);
             oldStates.push(s);
             alreadyOn[s.id] = false;
-        }
+    }
 
     for (var i = 0; i < str.length; i++) {
 
         var c = str[i];
-        
+
+        if (!(util.contains(this.alphabet, c)) ||
+            (testNfa && util.contains(testNfa.alphabet, c))) break;
+
         var index;
 
         for (var k = 0; k < oldStates.length; k++) {
@@ -226,33 +233,58 @@ NFA.prototype.simulate = function(str) {
         }
 
         var oldStatesCopy = oldStates.slice(0);
-        visitedStates.push(oldStatesCopy);
-    
-
+        for (var ost of oldStatesCopy)
+            tmpVisitedStates.push(ost);
+        //visitedStates.push(oldStatesCopy);
     }  
+
+    // Compute all the distances from the starting state (root).
+    for (var st of this._states) {
+        for (var edge of this._edges) {
+            if (edge.fromState === st)
+                edge.toState.distFromStart = edge.fromState.distFromStart + 1;
+        }
+    }
+
+    for (var st of tmpVisitedStates) {
+        var index = st.distFromStart;
+        if (visitedStates[index])
+            visitedStates[index].push(st);
+        else
+            visitedStates[index] = [st];
+    }
+
+    // Clean up the array.
+    for (var i = 0; i < visitedStates.length; i++) {
+        if (!visitedStates[i]) {
+            visitedStates.splice(i, 1);
+            i--;
+        }
+    }
 
     this.addRouteEdges(s0);
     this.addRouteCircles();
+
 
     var oldStatesSet = new Set();
     for (var st of oldStates)
         oldStatesSet.add(st);
 
     console.log(util.areInterSecting(oldStatesSet, this.finalStates));
-
-    /*
+    
     visitedStates = [];
     oldStates = [];
     newStates = [];
-    */
+    
 };
 
 
 NFA.prototype.addState = function(s) {
     newStates.push(s);
     alreadyOn[s.id] = true;
-    for (var i = 0; i < this.move(s, eps).length(); i++) {
-        var aState = this.move(s, eps).getObject(i);
+    var epsStates = this.epsClosState(s);
+    for (var i = 0; i < epsStates.length(); i++) {
+        var aState = epsStates.getObject(i);
         if (!alreadyOn[aState.id])
             this.addState(aState);
     }
@@ -297,7 +329,11 @@ NFA.prototype.addRouteEdges = function(s0) {
                     }
                     else if (edge.toState === st){
                         console.log('SPLICING');
-                        visitedStates.splice(i+1, 0, [st]);
+                        //visitedStates.splice(i+1, 0, [st]);
+                        if (visitedStates[i+2] && util.contains(visitedStates[i+2], st)) {
+                            var index = visitedStates[i+2].indexOf(st);
+                            //visitedStates[i+2].splice(index,1);
+                        }
                     }
                 }
             }
@@ -399,4 +435,4 @@ var NFATest = function() {
     console.log(DTran);
 };
 
-NFATest();
+//NFATest();

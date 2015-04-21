@@ -44,14 +44,14 @@ var inputs = {
     mouseDown : function(e) {
         var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
 
-        if (e.shiftKey && g_routeCircles.length === 0) { // shift + mouseClick
+        if (e.shiftKey){// && g_routeCircles.length === 0) { // shift + mouseClick
             inputs.updateMouseCoords(e);
             g_isBuildingEdge = true;
             draw.edgeX1 = inputs.mouse.X;
             draw.edgeY1 = inputs.mouse.Y;
             visualSM.prepareEdge(inputs.mouse.X, inputs.mouse.Y);
         }
-        else if (state && g_routeCircles.length === 0)
+        else if (state)// && g_routeCircles.length === 0)
             state.isSelected = true;
     },
 
@@ -72,7 +72,10 @@ var inputs = {
 
     evalHandle : function() { visualSM.evaluate(); },
 
-    combineStatesHandle : function() { g_SM.combineStates(); }
+    combineStatesHandle : function() { 
+        g_SM.subsetConstruction(g_SM.findStartState());
+        g_SM.combineStates(); 
+    }
 
 
 };
