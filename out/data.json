@@ -1,0 +1,524 @@
+{
+    "project": {"Visual SM"},
+    "files": {
+        "js/dataStructure/DFA.js": {
+            "name": "js/dataStructure/DFA.js",
+            "modules": {},
+            "classes": {
+                "DFA": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/dataStructure/Edge.js": {
+            "name": "js/dataStructure/Edge.js",
+            "modules": {},
+            "classes": {
+                "Edge": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/dataStructure/NFA.js": {
+            "name": "js/dataStructure/NFA.js",
+            "modules": {},
+            "classes": {
+                "NFA": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "DFA": {
+            "name": "DFA",
+            "shortname": "DFA",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/dataStructure/DFA.js",
+            "line": 1,
+            "description": "A Deterministic Finite State Machine (DFA).\nThis class was only used during production.\nIt's not used in the main UI.",
+            "is_constructor": 1
+        },
+        "Edge": {
+            "name": "Edge",
+            "shortname": "Edge",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/dataStructure/Edge.js",
+            "line": 1,
+            "description": "An Edge connecting fromState and toState.\n\nUsage :\n new Edge({\n     fromState : State,\n     toState : State,\n     symbols : [String]\n });",
+            "is_constructor": 1
+        },
+        "NFA": {
+            "name": "NFA",
+            "shortname": "NFA",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/dataStructure/NFA.js",
+            "line": 15,
+            "description": "Non-Deterministic Finite State Machine (NFA)\n\nUsage :\n new NFA();",
+            "is_constructor": 1
+        }
+    },
+    "elements": {},
+    "classitems": [
+        {
+            "file": "js/dataStructure/DFA.js",
+            "line": 13,
+            "description": "Initializes the route string.\n\nPost: _crntState, _routeStr and _routeEdges have been initalized for \n       the next evaluation of a String.",
+            "itemtype": "method",
+            "name": "_initRoute",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "is the name of the string being evaluated",
+                    "type": "String"
+                },
+                {
+                    "name": "startState",
+                    "description": "is the starting state of the SM",
+                    "type": "State"
+                }
+            ],
+            "class": "DFA"
+        },
+        {
+            "file": "js/dataStructure/DFA.js",
+            "line": 29,
+            "description": "Evaluates a given string.\n\nPost: The status has been updated.",
+            "itemtype": "method",
+            "name": "evalString",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "is the name of the string being evaluated",
+                    "type": "String"
+                }
+            ],
+            "class": "DFA"
+        },
+        {
+            "file": "js/dataStructure/DFA.js",
+            "line": 64,
+            "description": "Moves the status of the SM to the new state.\n\nPost: newState is now _crntState.",
+            "itemtype": "method",
+            "name": "move",
+            "params": [
+                {
+                    "name": "newState",
+                    "description": "is the state being moved to",
+                    "type": "State"
+                }
+            ],
+            "class": "DFA"
+        },
+        {
+            "file": "js/dataStructure/DFA.js",
+            "line": 76,
+            "description": "Adds the state being evaluated to the route string.\n\nPost: The name of the state has been added to the route string.",
+            "itemtype": "method",
+            "name": "addToRoute",
+            "params": [
+                {
+                    "name": "state",
+                    "description": "is the state who's name is being added to the route string.",
+                    "type": "State"
+                }
+            ],
+            "class": "DFA"
+        },
+        {
+            "file": "js/dataStructure/DFA.js",
+            "line": 88,
+            "description": "Prints the route to the console window.\n\nPost: The route DFA took to evaluate the input\n       has been logged to the console window.",
+            "itemtype": "method",
+            "name": "printRoute",
+            "class": "DFA"
+        },
+        {
+            "file": "js/dataStructure/DFA.js",
+            "line": 100,
+            "description": "Adds information to the route string on whether the DFA\nhas accepted the input string or not.\n\nPre: DFA has evaluated all of it's inputs. \nPost: An indication of whether the input str\n      has been accepted or not by DFA has been\n      pushed to the back of the route string.",
+            "itemtype": "method",
+            "name": "addAcceptance",
+            "class": "DFA"
+        },
+        {
+            "file": "js/dataStructure/Edge.js",
+            "line": 20,
+            "description": "Computes the points that define the line that a route circle\nwill travel by.\n\nPost: The points of this Edge has been filled with the computed points.",
+            "itemtype": "method",
+            "name": "updateLinePoints",
+            "params": [
+                {
+                    "name": "frames",
+                    "description": "is the number of points that define the line to compute. (steps)",
+                    "type": "Number"
+                }
+            ],
+            "class": "Edge"
+        },
+        {
+            "file": "js/dataStructure/Edge.js",
+            "line": 51,
+            "description": "Updates the starting coordinates of this Edge.\n\nPost: This Edge's starting coordinates have been set to (x, y)",
+            "itemtype": "method",
+            "name": "updateStartCoords",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "is the x value of the coordinates",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "is the y value of the coordinates",
+                    "type": "Number"
+                }
+            ],
+            "class": "Edge"
+        },
+        {
+            "file": "js/dataStructure/Edge.js",
+            "line": 65,
+            "description": "Updates the final coordinates of this Edge.\n\nPost: This Edge's final coordinates have been set to (x, y)",
+            "itemtype": "method",
+            "name": "updateFinCoords",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "is the x value of the coordinates",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "is the y value of the coordinates",
+                    "type": "Number"
+                }
+            ],
+            "class": "Edge"
+        },
+        {
+            "file": "js/dataStructure/Edge.js",
+            "line": 79,
+            "description": "Clamps this Edge to a given state.\n\nPost: This Edge has been clamped to state.",
+            "itemtype": "method",
+            "name": "clampToState",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "is the x value of the coordinates",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "is the y value of the coordinates",
+                    "type": "Number"
+                },
+                {
+                    "name": "state",
+                    "description": "is the state to clamp to",
+                    "type": "State"
+                }
+            ],
+            "class": "Edge"
+        },
+        {
+            "file": "js/dataStructure/Edge.js",
+            "line": 96,
+            "description": "Handles updating the logic of this Edge\n\nPost: This Edge's logic has been updated.",
+            "itemtype": "method",
+            "name": "update",
+            "params": [
+                {
+                    "name": "du",
+                    "description": "is delta time from the last update.",
+                    "type": "Number"
+                }
+            ],
+            "class": "Edge"
+        },
+        {
+            "file": "js/dataStructure/Edge.js",
+            "line": 118,
+            "description": "Renders this Edge on the canvase\n\nPost: This edge has been rendered on the canvas",
+            "itemtype": "method",
+            "name": "render",
+            "params": [
+                {
+                    "name": "ctx",
+                    "description": "is the canvas context.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Edge"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 28,
+            "description": "Initializes the route string.\n\nPost: _crntState, _routeStrings and _routeEdges have been initalized for \n       the next evaluation of a String.",
+            "itemtype": "method",
+            "name": "_initRoute",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "is the name of the string being evaluated",
+                    "type": "String"
+                },
+                {
+                    "name": "startState",
+                    "description": "is the starting state of the SM",
+                    "type": "State"
+                }
+            ],
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 44,
+            "description": "Extracts the names of states in a set to a comma seperated string.",
+            "itemtype": "method",
+            "name": "extractStr",
+            "params": [
+                {
+                    "name": "stateSet",
+                    "description": "is a Set of State objects.",
+                    "type": "Set"
+                }
+            ],
+            "return": {
+                "description": "The comma seperated string of the names of the states in the set.",
+                "type": "String"
+            },
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 60,
+            "description": "DTran, the transition table, is updated.\nBased on chapter 3.7.1 (starting at p.152) in the dragon book.\n\nPost: DTran, the transition table, has been updated.",
+            "itemtype": "method",
+            "name": "updateDTran",
+            "params": [
+                {
+                    "name": "T",
+                    "description": "is a set of states",
+                    "type": "Set"
+                },
+                {
+                    "name": "symbol",
+                    "description": "is the symbol from the eval string being\n                added to the transition table.",
+                    "type": "String"
+                },
+                {
+                    "name": "U",
+                    "description": "is a set of states",
+                    "type": "Set"
+                }
+            ],
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 86,
+            "description": "Computes the set of states a state can transition to.\nBased on Figure 3.32, p.154 in the dragon book.\n\nPost: Dstates has been updated.",
+            "itemtype": "method",
+            "name": "subsetConstruction",
+            "params": [
+                {
+                    "name": "state",
+                    "description": "is the state to compute the subset from.",
+                    "type": "State"
+                }
+            ],
+            "return": {
+                "description": "The current status of Dstates.",
+                "type": "Set"
+            },
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 117,
+            "description": "Computes the epsilon closure from a single state.\nBased on chapter 3.7.1 (starting at p.152) in the dragon book.",
+            "itemtype": "method",
+            "name": "epsCloseState",
+            "params": [
+                {
+                    "name": "state",
+                    "description": "is the state to compute the epsilon closure from.",
+                    "type": "State"
+                }
+            ],
+            "return": {
+                "description": "The set of states in the epsilon closure of state.",
+                "type": "Set"
+            },
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 134,
+            "description": "Computes the epsilon closure from a set of states.\nBased on Figure 3.33 p.154 in the dragon book.",
+            "itemtype": "method",
+            "name": "epsCloseSet",
+            "params": [
+                {
+                    "name": "stateSet",
+                    "description": "is the set of states to compute the epsilon closure from.",
+                    "type": "State"
+                }
+            ],
+            "return": {
+                "description": "The set of states in the epsilon closure of stateSet.",
+                "type": "Set"
+            },
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 163,
+            "description": "Combines the states that can be the same state according to\nthe already computed transition table DTran.\nBased on chapter 3.7.1 (starting at p.152) in the dragon book.\n\nPost: The logic of the state machine has been updated according\n      to the combination of the states.",
+            "itemtype": "method",
+            "name": "combineStates",
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 252,
+            "description": "Simulates the evaluation of an input string for this SM.\nBased Figure 3.37, p.156 in the dragon book.\n\nPost: The logic for the simulation has been computed.",
+            "itemtype": "method",
+            "name": "simulate",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "is the evaluation string.",
+                    "type": "String"
+                }
+            ],
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 372,
+            "description": "A recursive method that adds a new state s, which is known not to be\non newStates.\n\nPost: The state and all it's recursively computed epsilon closure states\n      have been added to newStates.",
+            "itemtype": "method",
+            "name": "addState",
+            "params": [
+                {
+                    "name": "s",
+                    "description": "is a State.",
+                    "type": "State"
+                }
+            ],
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 393,
+            "description": "Computes the transition set for a given state and input symbol.",
+            "itemtype": "method",
+            "name": "move",
+            "params": [
+                {
+                    "name": "state",
+                    "description": "is the state to compute the transition from.",
+                    "type": "State"
+                },
+                {
+                    "name": "symbol",
+                    "description": "is the input symbol to compute the transition for.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The transition set.",
+                "type": "Set"
+            },
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 406,
+            "description": "Computes the transition set for a given set of states and input symbol.",
+            "itemtype": "method",
+            "name": "moveFromSet",
+            "params": [
+                {
+                    "name": "stateSet",
+                    "description": "is the set of states to compute the transition from.",
+                    "type": "Set"
+                },
+                {
+                    "name": "symbol",
+                    "description": "is the input symbol to compute the transition for.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The transition set.",
+                "type": "Set"
+            },
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 425,
+            "description": "Computes the edges that should be a part of the route in the simulation,\ngiven a state, and adds to the route edges collection.\n\nPost: The edges have been added to the _routeEdges collection.",
+            "itemtype": "method",
+            "name": "addRouteEdges",
+            "params": [
+                {
+                    "name": "s0",
+                    "description": "is  the state to compute the edges for.",
+                    "type": "State"
+                }
+            ],
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 467,
+            "description": "Computes the route circles (the blue simulation circles) \nthat should be a part of the route in the simulation,\ngiven a state, and adds to the route circles collection.\n\nPost: The circles have been added to the _routeCircles collection.",
+            "itemtype": "method",
+            "name": "addRouteCircles",
+            "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/NFA.js",
+            "line": 501,
+            "description": "Initializes the coords for a a given edge and states it is\nconnected to.\n\nPost: The coords have been initialized.",
+            "itemtype": "method",
+            "name": "initEdgeCoords",
+            "params": [
+                {
+                    "name": "fromState",
+                    "description": "is the state that newEdge goes from.",
+                    "type": "State"
+                },
+                {
+                    "name": "toState",
+                    "description": "is the state that newEdge goes to.",
+                    "type": "State"
+                },
+                {
+                    "name": "newEdge",
+                    "description": "is the Edge to initalize the coords for.",
+                    "type": "Edge"
+                }
+            ],
+            "class": "NFA"
+        }
+    ],
+    "warnings": []
+}

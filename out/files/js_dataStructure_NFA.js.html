@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>js/dataStructure/NFA.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/DFA.html">DFA</a></li>
+                                <li><a href="../classes/Edge.html">Edge</a></li>
+                                <li><a href="../classes/NFA.html">NFA</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: js/dataStructure/NFA.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/*
+* Globals
+*/
+var g_routeCircles = [];
+var eps = &#x27;d&#x27;;
+var startingEpsClos;
+var DTran = [];
+var Dstates;
+var alreadyOn = [],
+    oldStates = [],
+    newStates = [];
+var visitedStates = [],
+    tmpVisitedStates = [];
+
+/**
+* Non-Deterministic Finite State Machine (NFA)
+*
+* Usage :
+*  new NFA();
+
+* @class NFA
+* @constructor
+*/
+function NFA() {}
+
+NFA.prototype = new SM();   // Inherits from SM
+
+/**
+* Initializes the route string.
+*
+* Post: _crntState, _routeStrings and _routeEdges have been initalized for 
+        the next evaluation of a String.
+*
+* @method _initRoute
+* @param {String} str is the name of the string being evaluated
+* @param {State} startState is the starting state of the SM
+*/
+NFA.prototype._initRoute = function(str, startState) {
+    this._crntState = this.findState(startState.id);    // starting state
+    this._routeStrings = [str + &#x27; |&#x27;];
+    this._routeEdges = [];
+};
+
+/**
+* Extracts the names of states in a set to a comma seperated string. 
+*
+* @method extractStr
+* @param {Set} stateSet is a Set of State objects.
+* @return {String} The comma seperated string of the names of the states in the set.
+*/
+NFA.prototype.extractStr = function(stateSet) {
+    var str = &quot;&quot;;
+    for (var i = 0; i &lt; stateSet.length(); i++) {
+        var aState = stateSet.getObject(i);
+        if (aState.name) str += aState.name + &#x27;,&#x27;;        
+    }
+    return str;
+};
+
+/**
+* DTran, the transition table, is updated.
+* Based on chapter 3.7.1 (starting at p.152) in the dragon book.
+*
+* Post: DTran, the transition table, has been updated.
+*
+* @method updateDTran
+* @param {Set} T is a set of states
+* @param {String} symbol is the symbol from the eval string being
+*                 added to the transition table.
+* @param {Set} U is a set of states 
+*/
+NFA.prototype.updateDTran = function(T, symbol, U) {
+    if (U.length() &gt; 0) {
+        // Check if T -&gt; already in DTran
+        for (var tran of DTran) {
+            if (T === tran[0] &amp;&amp; U === tran[2]) {
+                tran[1].push(symbol);
+                return;
+            }
+        }
+        // Otherwise, add a new entry.
+        DTran.push([T, [symbol], U]);
+    }
+};
+
+/**
+* Computes the set of states a state can transition to.
+* Based on Figure 3.32, p.154 in the dragon book.
+*
+* Post: Dstates has been updated.
+*
+* @method subsetConstruction
+* @param {State} state is the state to compute the subset from.
+* @return {Set} The current status of Dstates.
+*/
+NFA.prototype.subsetConstruction = function(state) {
+    Dstates = [this.epsClosState(state)];   // an array of sets
+
+    for (var crntIndex = 0; crntIndex &lt; Dstates.length; crntIndex++) {
+        var T = Dstates[crntIndex];
+        // for each input symbol
+        for (var symbol of this.alphabet) {
+            if (symbol === eps) continue;
+            var U = this.epsClosSet(this.moveFromSet(T, symbol));
+            if (U.length()&gt; 0 &amp;&amp; !util.contains(Dstates, U)) {
+                // The state hasn&#x27;t been added.
+                // thus increasing the length of Dstates
+                // and adding another iteration to the outer-most loop.
+                Dstates.push(U);
+                this.updateDTran(T, symbol, U);
+            }
+        }
+    }
+    return Dstates;
+};
+
+/**
+* Computes the epsilon closure from a single state.
+* Based on chapter 3.7.1 (starting at p.152) in the dragon book.
+*
+* @method epsCloseState
+* @param {State} state is the state to compute the epsilon closure from.
+* @return {Set} The set of states in the epsilon closure of state.
+*/
+NFA.prototype.epsClosState = function(state) {
+    var returnSet = new Set();
+    returnSet.add(state);
+    var epsSet = state.transition(eps);
+    for (var i = 0; i &lt; epsSet.length(); i++)
+        returnSet.add(epsSet.getObject(i));
+    return returnSet;
+};
+
+/**
+* Computes the epsilon closure from a set of states.
+* Based on Figure 3.33 p.154 in the dragon book.
+*
+* @method epsCloseSet
+* @param {State} stateSet is the set of states to compute the epsilon closure from.
+* @return {Set} The set of states in the epsilon closure of stateSet.
+*/
+NFA.prototype.epsClosSet = function(stateSet) {
+    var stack = [];
+    // Push all states onto stack.
+    if (stateSet.length() &gt; 0)
+        for (var i = 0; i &lt; stateSet.length(); i++)
+            stack.push(stateSet.getObject(i));
+    var epsClosT = stateSet;
+    while (stack.length !== 0) {
+        var topState = stack.pop();
+        for (var outEdge of topState.outgoingEdges) {
+            if (util.contains(outEdge.symbols, eps) &amp;&amp;
+                !epsClosT.contains(outEdge.toState))
+            {
+                epsClosT.add(outEdge.toState);
+                stack.push(outEdge.toState);
+            }
+        }
+    }
+    return epsClosT;
+};
+
+/**
+* Combines the states that can be the same state according to
+* the already computed transition table DTran.
+* Based on chapter 3.7.1 (starting at p.152) in the dragon book.
+*
+* Post: The logic of the state machine has been updated according
+*       to the combination of the states.
+*
+* @method combineStates
+*/
+NFA.prototype.combineStates = function() {
+    /*
+        Pseudo for this method:
+
+        - delete all the current states and edges
+            (_states = []  _edges = [] finalStates = {empty set})
+
+        for (all things in DTran)
+            - make new state from 0th entry
+            - make new state from 2nd entry
+            - make edge from 0th entry state to
+              2nd entry state having the symbols
+              in the 1st entry
+
+    */
+
+    // Remove old states and edges.
+    this._states = [];
+    this._edges = [];
+    this.finalStates = new Set();
+
+    // Init new coords.
+    var cx = 100,
+        cy = 100;
+
+    for (var tran of DTran) {
+        var isStart = false,
+            isFin = false;
+        var newStateName = &quot;&quot;;
+
+        // new fromState
+        var fromStateSet = tran[0]; 
+        for (var i = 0; i &lt; fromStateSet.length(); i++) {
+            var aState = fromStateSet.getObject(i);
+            if (aState.isStart()) isStart = true;
+            if (aState.isFin()) isFin = true;
+            if (aState.name) newStateName += aState.name;
+            else             newStateName += &quot; &quot;;
+        }
+        if (!this.findStateByName(newStateName))
+            this.generateState(cx, cy, newStateName, isStart, isFin);
+
+        var fromState = this.findStateByName(newStateName);
+
+        newStateName = &quot;&quot;;
+
+        cx += 50;
+        cy += 50;
+
+        // new toState
+        var toStateSet = tran[2];
+        for (var i = 0; i &lt; toStateSet.length(); i++) {
+            var aState = toStateSet.getObject(i);
+            isStart = aState.isStart();
+            isFin = aState.isFin();
+            if (aState.name) newStateName += aState.name;
+            else             newStateName += &quot; &quot;;               
+        }
+        if (!this.findStateByName(newStateName))
+            this.generateState(cx, cy, newStateName, isStart, isFin);
+
+        var toState = this.findStateByName(newStateName);
+
+        cx += 50;
+        cy += 50;
+
+        // new edge between fromState and toState
+        var edgeSymbols = tran[1];
+        // remove eps transitions
+        if (util.contains(edgeSymbols, eps)) {
+            var index = edgeSymbols.indexOf(eps);
+            edgeSymbols.splice(index, 1);
+        }
+        this.generateEdge(fromState, toState, edgeSymbols);
+        var newEdge = this._edges[this._edges.length - 1];
+        this.initEdgeCoords(fromState, toState, newEdge);
+    }
+};
+
+/**
+* Simulates the evaluation of an input string for this SM.
+* Based Figure 3.37, p.156 in the dragon book.
+*
+* Post: The logic for the simulation has been computed.
+*
+* @method simulate
+* @param {String} str is the evaluation string.
+*/
+NFA.prototype.simulate = function(str) {
+
+    this._routeEdges = [];
+
+    var s0 = this.findStartState();
+    s0.depths.push(0);
+    var epsClosStates = this.epsClosState(s0);
+    for (var i = 0; i &lt; epsClosStates.length(); i++)
+        this.addState(epsClosStates.getObject(i));
+
+    for (var s of newStates) {
+            var index = newStates.indexOf(s);
+            newStates.splice(index, 1);
+            oldStates.push(s);
+            alreadyOn[s.id] = false;
+    }
+
+
+    for (var i = 0; i &lt; str.length; i++) {
+        var c = str[i];
+
+        if (!(util.contains(this.alphabet, c)) ||
+            (testNfa &amp;&amp; util.contains(testNfa.alphabet, c))) break;
+
+        var index;
+
+        for (var k = 0; k &lt; oldStates.length; k++) {
+
+            var s = oldStates[k];
+            var moveSC = this.move(s, c);   // a set of states
+            for (var j = 0; j &lt; moveSC.length(); j++) {
+
+                var t = moveSC.getObject(j);    // a state
+
+                if (!alreadyOn[t.id])
+                    this.addState(t);
+            }
+
+            var index = oldStates.indexOf(s);
+            oldStates.splice(index, 1);
+            --k;
+        }
+
+        for (var k = 0; k &lt; newStates.length; k++) {
+            var s = newStates[k];
+            var index = newStates.indexOf(s);
+            newStates.splice(index, 1);
+            --k;
+            oldStates.push(s);
+            alreadyOn[s.id] = false;
+        }
+
+        var oldStatesCopy = oldStates.slice(0);
+        for (var ost of oldStatesCopy)
+            tmpVisitedStates.push(ost);
+    }  
+
+    // Compute all the distances from the starting state (root).
+    for (var st of tmpVisitedStates) {
+        for (var edge of this._edges) {
+            if (edge.toState === st) {
+                var fsDepths = edge.fromState.depths;
+                var tsDepths = edge.toState.depths;
+                var latestDepth = fsDepths[fsDepths.length - 1];
+                tsDepths.push(latestDepth + 1);
+            }
+        }   
+    }
+
+    // Add states in the correct ordering to the visitedStates array.
+    for (var st of tmpVisitedStates) {
+        if (!st.depths.length &gt; 0) break;
+        var index = st.depths.shift();
+        console.log(index);
+        if (visitedStates[index])
+            visitedStates[index].push(st);
+        else
+            visitedStates[index] = [st];
+    }
+
+    // Clean up the array.
+    for (var i = 0; i &lt; visitedStates.length; i++) {
+        if (!visitedStates[i]) {
+            visitedStates.splice(i, 1);
+            i--;
+        }
+    }
+    
+    if (util.contains(visitedStates[0], s0)) {
+        var index = visitedStates[0].indexOf(s0);
+        visitedStates[0].splice(index, 1);
+    }
+
+    if (visitedStates[0].length === 0)
+        visitedStates.shift();
+
+    this.addRouteEdges(s0);
+    this.addRouteCircles();
+
+    var oldStatesSet = new Set();
+    for (var st of oldStates)
+        oldStatesSet.add(st);
+
+    // console.log(util.areInterSecting(oldStatesSet, this.finalStates));
+
+    visitedStates = [];
+    oldStates = [];
+    newStates = [];
+    tmpVisitedStates = [];
+};
+
+/**
+* A recursive method that adds a new state s, which is known not to be
+* on newStates.
+*
+* Post: The state and all it&#x27;s recursively computed epsilon closure states
+*       have been added to newStates.
+*
+* @method addState
+* @param {State} s is a State.
+*/
+NFA.prototype.addState = function(s) {
+    newStates.push(s);
+    alreadyOn[s.id] = true;
+    var epsStates = this.epsClosState(s);
+    for (var i = 0; i &lt; epsStates.length(); i++) {
+        var aState = epsStates.getObject(i);
+        if (!alreadyOn[aState.id])
+            this.addState(aState);
+    }
+};
+
+/**
+* Computes the transition set for a given state and input symbol.
+*
+* @method move
+* @param {State} state is the state to compute the transition from.
+* @param {String} symbol is the input symbol to compute the transition for.
+* @return {Set} The transition set.
+*/
+NFA.prototype.move = function(state, symbol) {
+    if (state)  return state.transition(symbol);
+    else        return new Set();
+};
+
+/**
+* Computes the transition set for a given set of states and input symbol.
+*
+* @method moveFromSet
+* @param {Set} stateSet is the set of states to compute the transition from.
+* @param {String} symbol is the input symbol to compute the transition for.
+* @return {Set} The transition set.
+*/
+NFA.prototype.moveFromSet = function(stateSet, symbol) {
+    var allToStates = new Set();
+    for (var i = 0; i &lt; stateSet.length(); i++) {
+        var aState = stateSet.getObject(i);
+        var toStates = this.move(aState, symbol);
+        for (var j = 0; j &lt; toStates.length(); j++)
+            allToStates.add(toStates.getObject(j));
+    }
+    return allToStates;
+};
+
+/**
+* Computes the edges that should be a part of the route in the simulation,
+* given a state, and adds to the route edges collection.
+*
+* Post: The edges have been added to the _routeEdges collection.
+*
+* @method addRouteEdges
+* @param {State} s0 is  the state to compute the edges for.
+*/
+NFA.prototype.addRouteEdges = function(s0) {
+    for (var i = 0; i &lt; visitedStates.length; i++) {
+        var v = visitedStates[i];
+        this._routeEdges.push([]); // Will be the ith element of routeEdges.
+        if (i === 0) {
+            // Check if there&#x27;s  and edge from starting state 
+            // to any of the visited states.
+            for (var st of v) {
+                for (var edge of this._edges) {
+                    if (edge.fromState === s0 &amp;&amp; edge.toState === st) {
+                        if (!util.contains(this._routeEdges[i], edge))
+                            // No duplicate edges.
+                            this._routeEdges[i].push(edge);
+                    }
+                }
+            }
+        }
+        else if (i &gt; 0) { // Last visited state is visitedStates[i - 1]
+            for (var st of v) {
+                // Check for edges between visitedStates[i - 1]
+                // and visitedStates[i]
+                for (var ovst of visitedStates[i - 1]) { // old visited states
+                    for (var edge of this._edges)
+                        if (edge.fromState === ovst &amp;&amp; edge.toState === st)
+                            if (!util.contains(this._routeEdges[i], edge))
+                                // No duplicate edges.
+                                this._routeEdges[i].push(edge);
+                }
+            }
+        }
+    }
+};
+
+/**
+* Computes the route circles (the blue simulation circles) 
+* that should be a part of the route in the simulation,
+* given a state, and adds to the route circles collection.
+*
+* Post: The circles have been added to the _routeCircles collection.
+*
+* @method addRouteCircles
+*/
+NFA.prototype.addRouteCircles = function() {
+    var rC = new RouteCircle();
+    var rCP = rC.routePoints;
+
+    for (var i = 0; i &lt; this._routeEdges.length; i++) {
+        var rE = this._routeEdges[i];
+
+        rCP.push([]);   // one set of edges between states (one transfer
+                        // between states in the animation)
+
+        for (var j = 0; j &lt; rE.length; j++) {
+            var r = rE[j];
+
+            rCP[i].push([]);
+
+            r.updateLinePoints(100);
+
+            for (var p of r.points)
+                rCP[i][j].unshift(p);
+        }
+    }
+
+    g_routeCircles.push(rC);
+};
+
+/**
+* Initializes the coords for a a given edge and states it is
+* connected to.
+*
+* Post: The coords have been initialized.
+*
+* @method initEdgeCoords
+* @param {State} fromState is the state that newEdge goes from.
+* @param {State} toState is the state that newEdge goes to.
+* @param {Edge} newEdge is the Edge to initalize the coords for. 
+*/
+NFA.prototype.initEdgeCoords = function(fromState, toState, newEdge) {
+    // fromState
+    clampCoords = newEdge.clampToState(fromState.cx, fromState.cy, fromState);
+    newEdge.updateStartCoords(clampCoords[0], clampCoords[1]);
+    // toState
+    clampCoords = newEdge.clampToState(toState.cx, toState.cy, toState);
+    newEdge.updateFinCoords(clampCoords[0], clampCoords[1]);
+};
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content='maximum-scale=1.0, initial-scale=1.0, width=device-width' name='viewport'>
+    <title>State Machine Visualization</title>
+    <link href="bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap_ver_style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  </head>
+  <body class="container">
+    <h1>State Machine Visualization</h1>
+    <ul class="nav nav-pills">
+      <li role="presentation" class="active"><a href="#">DFA</a></li>
+      <li role="presentation"><a href="#">NFA</a></li>
+    </ul>
+    <div id="canvasContainer">
+      <canvas id="myCanvas" width="1000" height="563" tabindex="1" autofocus>
+        Sorry, but your browser does not support the HTML5 canvas tag.
+      </canvas>
+    </div>
+    <div id="buttonContainer">
+      <button id="addStateBtn" class="btn btn-default" type="button" data-toggle="tooltip" data-placement="bottom"
+       title="Shortcut: Double click on canvas">
+        <i class="fa fa-plus"></i> Add state
+      </button>
+      <button id="addEdgeBtn" class="btn btn-default" type="button" data-toggle="tooltip" data-placement="bottom"
+       title="Shortcut: Shift+drag mouse on canvas">
+        <i class="fa fa-plus"></i> Add edge
+      </button>
+      <button id="evalBtn" class="btn btn-default" type="button">
+        <i class="fa fa-check"></i> Evaluate string
+      </button>
+      <button id="combineStatesBtn" class="btn btn-default" type="button">
+        <i class="fa fa-compress"></i> Combine states
+      </button>    
+    </div>    
+    <div id="myInfoFooter">
+      <address>
+        A project by Tumi Snær Gíslason, <a href="mailto:tsg3@hi.is">tsg3@hi.is</a>
+      </address>  
+    </div>
+    <div id="stateModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="stateModalLabel">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="stateModalLabel">State</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="stateNameTextInput">Name</label>
+                <input type="text" class="form-control" id="stateNameTextInput" placeholder="Name">
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"> Start state
+                </label>
+              </div>
+              <div class="modalFormButtons">
+                <button type="submit" class="btn btn-success"><i class="fa fa-pencil"></i> OK</button>
+                <button type="submit" class="btn btn-danger" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i> Cancel</button>
+              </div>
+            </form>  
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="edgeModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="edgeModalLabel">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="edgeModalLabel">Edge</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="edgeSymbolsTextInput">Symbols</label>
+                <input type="text" class="form-control" id="edgeSymbolsTextInput" placeholder="Symbols">
+                <p id="edgeSymbolsInfo"><i class="fa fa-info-circle"></i> Seperate symbols by whitespace</p>
+              </div>
+              <div class="modalFormButtons">
+                <button type="submit" class="btn btn-success"><i class="fa fa-pencil"></i> OK</button>
+                <button type="submit" class="btn btn-danger" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i> Cancel</button>
+              </div>
+            </form>  
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="evalStringModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="evalStringModalLabel">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+           <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="evalStringModalLabel">Evaluate string</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="evalStringTextInput">String</label>
+                <input type="text" class="form-control" id="evalStringTextInput" placeholder="String">
+              </div>
+              <div class="modalFormButtons">
+                <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Evaluate</button>
+                <button type="submit" class="btn btn-danger" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i> Cancel</button>
+              </div>
+            </form>  
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/consts.js"></script>
+    <script src="js/draw.js"></script>
+    <script src="js/inputs.js"></script>
+    <script src="js/RouteCircle.js"></script>
+    <script src="js/dataStructure/SM.js"></script>
+    <script src="js/dataStructure/Edge.js"></script>
+    <script src="js/dataStructure/State.js"></script>
+    <script src="js/dataStructure/Set.js"></script>
+    <script src="js/dataStructure/DFA.js"></script>
+    <script src="js/dataStructure/NFA.js"></script>
+    <script src="js/visualSM.js"></script>
+    <script src="js/update.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
