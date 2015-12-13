@@ -81,23 +81,6 @@ State.prototype.updateCoords = function(x, y) {
     }
 };
 
-// Fix this, is NOT working.
-State.prototype.isInCanvas = function() {
-    var canvasWidth = g_canvas.width,
-        canvasHeight = g_canvas.height;
-
-    var cx = this.cx,
-        cy = this.cy,
-        rad = this.radius;
-
-    var inLeftBound = cx - rad > 0,
-        inTopBound = cy - rad > 0,
-        inRightBound = cx + rad < canvasWidth,
-        inBtmBound = cy + rad < canvasHeight;
-
-    return inLeftBound && inTopBound && inRightBound && inBtmBound;
-};
-
 State.prototype.update = function(du) {
     if (this.isSelected)
         this.updateCoords(inputs.mouse.X, inputs.mouse.Y);

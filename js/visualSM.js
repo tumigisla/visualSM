@@ -118,6 +118,20 @@ var visualSM = {
     //       'state' or 'edge'.
     addAttr : function(type) {
         if (type === 'state') {
+            $('#stateModal').modal('show');
+            return;
+        }
+        if (type === 'edge') {
+            $('#edgeModal').modal('show');
+            return;
+        }
+        if (type === 'evalStr') {
+            $('#evalStringModal').modal('show');
+            return;
+        }
+
+
+        if (type === 'state') {
             var attr = prompt(type + 'Name isStart isFinal');
             attr = util.extractSymbols(attr);
             attr[1] = attr[1] === 'true';

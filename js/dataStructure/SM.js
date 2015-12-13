@@ -5,15 +5,13 @@
 */
 
 function SM(descr) {
-
     this._states = [];
     this._edges = [];
 
     this.finalStates = new Set();
 
     this.alphabet = [];
-    this._id = 0;       // TODO: acknowledge all states completely by their id, not by name.
-
+    this._id = 0; 
 }
 
 // Usage : SM.generateState(name, start, fin);

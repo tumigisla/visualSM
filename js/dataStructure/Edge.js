@@ -1,28 +1,31 @@
-/*
- An Edge connecting fromState
- and toState.
+/**
+* An Edge connecting fromState and toState.
+*
+* Usage :
+*  new Edge({
+*      fromState : State,
+*      toState : State,
+*      symbols : [String]
+*  });
 
- symbols is an array of possible
- transitions from fromState to toState.
+* @class Edge
+* @constructor
 */
-
-// Usage :
-//  new Edge({
-//      fromState : State,
-//      toState : State,
-//      symbols : [String]
-//  });
 function Edge(descr) {
     for (var property in descr) {
         this[property] = descr[property];
     }
 }
 
-
-// Interaction
-
-// No return value. Updates the points on this
-// Edge.
+/**
+* Computes the points that define the line that a route circle
+* will travel by.
+*
+* Post: The points of this Edge has been filled with the computed points.
+*
+* @method updateLinePoints
+* @param {Number} frames is the number of points that define the line to compute. (steps)
+*/
 Edge.prototype.updateLinePoints = function(frames) {
     var dx = this.x2 - this.x1,
         dy = this.y2 - this.y1,
@@ -45,16 +48,44 @@ Edge.prototype.updateLinePoints = function(frames) {
     this.points.push({x : this.x2, y : this.y2});
 };
 
+/**
+* Updates the starting coordinates of this Edge.
+*
+* Post: This Edge's starting coordinates have been set to (x, y)
+*
+* @method updateStartCoords
+* @param {Number} x is the x value of the coordinates
+* @param {Number} y is the y value of the coordinates
+*/
 Edge.prototype.updateStartCoords = function(x, y) {
     this.x1 = x;
     this.y1 = y;
 };
 
+/**
+* Updates the final coordinates of this Edge.
+*
+* Post: This Edge's final coordinates have been set to (x, y)
+*
+* @method updateFinCoords
+* @param {Number} x is the x value of the coordinates
+* @param {Number} y is the y value of the coordinates
+*/
 Edge.prototype.updateFinCoords = function(x, y) {
     this.x2 = x;
     this.y2 = y;
 };
 
+/**
+* Clamps this Edge to a given state.
+*
+* Post: This Edge has been clamped to state.
+*
+* @method clampToState
+* @param {Number} x is the x value of the coordinates
+* @param {Number} y is the y value of the coordinates
+* @param {State} state is the state to clamp to
+*/
 Edge.prototype.clampToState = function(x, y, state) {
     if (x >= state.cx) x = state.cx + state.radius; // edge end to right of state
     else if (x < state.cx) x = state.cx - state.radius; // edge end to left of state
@@ -62,6 +93,14 @@ Edge.prototype.clampToState = function(x, y, state) {
     return [x, y];
 };
 
+/**
+* Handles updating the logic of this Edge
+*
+* Post: This Edge's logic has been updated.
+*
+* @method update
+* @param {Number} du is delta time from the last update.
+*/
 Edge.prototype.update = function(du) {
     if (this.fromState) {
         var clampStartCoords = this.clampToState(this.x1, this.y1, this.fromState);
@@ -76,6 +115,14 @@ Edge.prototype.update = function(du) {
     }
 };
 
+/**
+* Renders this Edge on the canvase
+*
+* Post: This edge has been rendered on the canvas
+*
+* @method render
+* @param {Object} ctx is the canvas context.
+*/
 Edge.prototype.render = function(ctx) {
     draw.edge(ctx, this.x1, this.y1, this.x2, this.y2);
 

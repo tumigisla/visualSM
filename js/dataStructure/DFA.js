@@ -1,41 +1,39 @@
-/*
- A Deterministic Finite State Machine (DFA)
-
- Usage:
-
-    DFA.alphabet = [String];
-
-    DFA.generateState(name, start, fin);
-    .
-    .
-    .
-
-    DFA.generateEdge(fromState, toState, symbols);
-    .
-    .
-    .
-
-    DFA.evalString(String);
-
-    (see details below)
-
+/**
+* A Deterministic Finite State Machine (DFA).
+* This class was only used during production.
+* It's not used in the main UI.
+*
+* @class DFA
+* @constructor
 */
 function DFA(descr) {}
 
-DFA.prototype = new SM();
+DFA.prototype = new SM(); // Inherits from SM
 
-// Usage : DFA._initRoute(str);
-// Post : _routes and _crntStates have been
-//        initialized for next evaluation of a String.
+/**
+* Initializes the route string.
+*
+* Post: _crntState, _routeStr and _routeEdges have been initalized for 
+        the next evaluation of a String.
+*
+* @method _initRoute
+* @param {String} str is the name of the string being evaluated
+* @param {State} startState is the starting state of the SM
+*/
 DFA.prototype._initRoute = function(str, startState) {
     this._crntState = this.findState(startState.id);    // starting state
     this._routeStr = str + ' |';
     this._routeEdges = [];
 };
 
-// Usage : DFA.evalString(str);
-// Return value : An array of routes the DFA takes
-//                to evaluate the input str.
+/**
+* Evaluates a given string.
+*
+* Post: The status has been updated.
+*
+* @method evalString
+* @param {String} str is the name of the string being evaluated
+*/
 DFA.prototype.evalString = function(str) {
     var startState = this.findStartState();
     str = str.toLowerCase();    // upper case symbols accepted as well
@@ -63,75 +61,56 @@ DFA.prototype.evalString = function(str) {
     visualSM.addToStats(this._routeStr);
 };
 
-// Usage : DFA.move(newState);
-// Post : DFA._crntState is not newState
+/**
+* Moves the status of the SM to the new state.
+*
+* Post: newState is now _crntState.
+*
+* @method move
+* @param {State} newState is the state being moved to
+*/
 DFA.prototype.move = function(newState) {
     this._crntState = newState;
 };
 
-// Usage : DFA.addToRoute();
-// Post : The name of state has been
-//        added to the route string.
+/**
+* Adds the state being evaluated to the route string.
+*
+* Post: The name of the state has been added to the route string.
+*
+* @method addToRoute
+* @param {State} state is the state who's name is being added to the route string.
+*/
 DFA.prototype.addToRoute = function(state) {
     this._routeStr += state.name + ' -> ';
 };
 
-// Usage : DFA.printRoute();
-// Post : The route DFA took to evaluate the input
-//        have been logged to the console.
+/**
+* Prints the route to the console window.
+*
+* Post: The route DFA took to evaluate the input
+*        has been logged to the console window.
+*
+* @method printRoute
+*/
 DFA.prototype.printRoute = function() {
     console.log(this._routeStr);
 };
 
-// Usage : DFA.addAcceptance();
-// Pre : DFA has evaluated all of it's input.
-// Post : An indication of whether the input str
-//        has been accepted or not by DFA has been
-//        pushed to the back of the route string.
+/**
+* Adds information to the route string on whether the DFA
+* has accepted the input string or not.
+*
+* Pre: DFA has evaluated all of it's inputs. 
+* Post: An indication of whether the input str
+*       has been accepted or not by DFA has been
+*       pushed to the back of the route string.
+*
+* @method addAcceptance
+*/
 DFA.prototype.addAcceptance = function() {
     if (this._crntState.isFin())
         this._routeStr += ' ' + this._crntState.name + ' : Accepted';
     else
         this._routeStr += ' ' + this._crntState.name + ' : NOT Accepted';
 };
-
-var DfaTest = function() {
-    // DFA
-    // L = (a(a + b)) + (b(a + b))
-    
-    var testDfa = new DFA();
-
-    testDfa.alphabet = ['a', 'b'];
-
-    testDfa.generateState('q0', true, false);
-    testDfa.generateState('q1', false, false);
-    testDfa.generateState('q2', false, false);
-    testDfa.generateState('qf', false, true);
-
-    testDfa.generateEdge(testDfa.findState('q0'), testDfa.findState('q1'), ['a']);
-    testDfa.generateEdge(testDfa.findState('q0'), testDfa.findState('q2'), ['b']);
-    testDfa.generateEdge(testDfa.findState('q1'), testDfa.findState('qf'), ['a', 'b']);
-    testDfa.generateEdge(testDfa.findState('q2'), testDfa.findState('qf'), ['a', 'b']);
-
-    // Trash state
-    testDfa.generateState('qTrash', false, false);
-    testDfa.generateEdge(testDfa.findState('qf'), testDfa.findState('qTrash'), ['a', 'b']);
-    testDfa.generateEdge(testDfa.findState('qTrash'), testDfa.findState('qTrash'), ['a', 'b']);
-
-    // Accepted
-    testDfa.evalString('aa');
-    testDfa.evalString('ab');
-    testDfa.evalString('ba');
-    testDfa.evalString('bb');
-    testDfa.evalString('AB');
-
-    // NOT Accepted
-    testDfa.evalString('aaa');
-    testDfa.evalString('bab');
-    testDfa.evalString('aaaaaaa');
-
-    // Wrong input
-    testDfa.evalString('ac');
-};
-
-//DfaTest();
