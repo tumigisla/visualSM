@@ -13,48 +13,64 @@ var inputs = {
     mouse : {X : 0, Y : 0},
 
     /**
-    * Removes an object from this Set.
-    *
-    * Post: The object has been remved to this Set.
-    *
-    * @method remove
-    * @param {Object} object is an object of any kind.
+    * @method handleKeyDown
     */
     handleKeyDown : function(e) {
         this.keys[e.keyCode] = true;
     },
 
+    /**
+    * @method handleKeyUp
+    */
     handleKeyUp : function(e) {
         this.keys[e.keyCode] = false;
     },
 
+    /**
+    * @method keyCode
+    */
     keyCode : function(e) {
         return keyChar.charCodeAt(0);
     },
 
+    /**
+    * @method handleKeyDown
+    */
     eatKey : function(keyCode) {
         var isDown = this.keys[keyCode];
         this.keys[keyCode] = false;
         return isDown;
     },
 
+    /**
+    * @method updateMouseCoords
+    */
     updateMouseCoords : function(e) {
         inputs.mouse.X = e.clientX - g_canvas.offsetLeft;
         inputs.mouse.Y = e.clientY - g_canvas.offsetTop;
     },
 
+    /**
+    * @method handleClick
+    */
     handleClick : function(e) {
         inputs.updateMouseCoords(e);
         // var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
         // if (state) state.isSelected = !state.isSelected;
     },
 
+    /**
+    * @method handleDblKlick
+    */
     handleDblKlick : function(e) {
         inputs.updateMouseCoords(e);
         if (!e.which) return; // no button being pressed
         visualSM.insertState(inputs.mouse.X, inputs.mouse.Y);
    },
 
+    /**
+    * @method mouseDown
+    */
     mouseDown : function(e) {
         var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
 
@@ -69,6 +85,9 @@ var inputs = {
             state.isSelected = true;
     },
 
+    /**
+    * @method mouseUp
+    */
     mouseUp : function(e) {
         var state = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
 
@@ -82,10 +101,19 @@ var inputs = {
             state.isSelected = false;
     },
 
+    /**
+    * @method mouseMove
+    */
     mouseMove : function(e) { inputs.updateMouseCoords(e); },
 
+    /**
+    * @method evalHandle
+    */
     evalHandle : function() { visualSM.evaluate(); },
 
+    /**
+    * @method combineStatesHandle
+    */
     combineStatesHandle : function() { 
         g_SM.subsetConstruction(g_SM.findStartState());
         g_SM.combineStates(); 

@@ -3,7 +3,18 @@ YUI.add("yuidoc-meta", function(Y) {
     "classes": [
         "DFA",
         "Edge",
-        "NFA"
+        "NFA",
+        "RouteCircle",
+        "SM",
+        "Set",
+        "State",
+        "consts",
+        "draw",
+        "inputs",
+        "main",
+        "render",
+        "update",
+        "util"
     ],
     "modules": [],
     "allModules": [],

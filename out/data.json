@@ -1,5 +1,5 @@
 {
-    "project": {"Visual SM"},
+    "project": {},
     "files": {
         "js/dataStructure/DFA.js": {
             "name": "js/dataStructure/DFA.js",
@@ -24,6 +24,105 @@
             "modules": {},
             "classes": {
                 "NFA": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/dataStructure/SM.js": {
+            "name": "js/dataStructure/SM.js",
+            "modules": {},
+            "classes": {
+                "SM": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/dataStructure/Set.js": {
+            "name": "js/dataStructure/Set.js",
+            "modules": {},
+            "classes": {
+                "Set": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/dataStructure/State.js": {
+            "name": "js/dataStructure/State.js",
+            "modules": {},
+            "classes": {
+                "State": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/RouteCircle.js": {
+            "name": "js/RouteCircle.js",
+            "modules": {},
+            "classes": {
+                "RouteCircle": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/consts.js": {
+            "name": "js/consts.js",
+            "modules": {},
+            "classes": {
+                "consts": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/draw.js": {
+            "name": "js/draw.js",
+            "modules": {},
+            "classes": {
+                "draw": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/inputs.js": {
+            "name": "js/inputs.js",
+            "modules": {},
+            "classes": {
+                "inputs": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/main.js": {
+            "name": "js/main.js",
+            "modules": {},
+            "classes": {
+                "main": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/render.js": {
+            "name": "js/render.js",
+            "modules": {},
+            "classes": {
+                "render": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/update.js": {
+            "name": "js/update.js",
+            "modules": {},
+            "classes": {
+                "update": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "js/util.js": {
+            "name": "js/util.js",
+            "modules": {},
+            "classes": {
+                "util": 1
             },
             "fors": {},
             "namespaces": {}
@@ -68,6 +167,149 @@
             "file": "js/dataStructure/NFA.js",
             "line": 15,
             "description": "Non-Deterministic Finite State Machine (NFA)\n\nUsage :\n new NFA();",
+            "is_constructor": 1
+        },
+        "SM": {
+            "name": "SM",
+            "shortname": "SM",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/dataStructure/SM.js",
+            "line": 1,
+            "description": "A State Machine. NFA and DFA both inherit from SM.",
+            "is_constructor": 1
+        },
+        "Set": {
+            "name": "Set",
+            "shortname": "Set",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/dataStructure/Set.js",
+            "line": 1,
+            "description": "A Set, having some of the attributes of a mathematical set,\nlike containing no duplicates.\nCan contain objects of any kind.",
+            "is_constructor": 1
+        },
+        "State": {
+            "name": "State",
+            "shortname": "State",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/dataStructure/State.js",
+            "line": 1,
+            "description": "A single State in a SM.\nIt has a name for the Edges to recognize,\nand can be a Starting State, a Final State or\nneither of those.\n\nA State has an array of both Incoming Edges\nand Outgoing Edges, indicating possible transitions\nfrom the State.\n\nUsage :\n new State({\n     cx   : Number,\n     cy   : Number,\n     name : String,\n     start : Boolean,\n     fin : Boolean,\n     id : Number\n });",
+            "is_constructor": 1
+        },
+        "RouteCircle": {
+            "name": "RouteCircle",
+            "shortname": "RouteCircle",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/RouteCircle.js",
+            "line": 1,
+            "description": "A route circle that travels on an Edge\nbetween states in the SM.",
+            "is_constructor": 1
+        },
+        "consts": {
+            "name": "consts",
+            "shortname": "consts",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/consts.js",
+            "line": 1,
+            "description": "Constants that are used in the system.",
+            "is_constructor": 1
+        },
+        "draw": {
+            "name": "draw",
+            "shortname": "draw",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/draw.js",
+            "line": 1,
+            "description": "Drawing methods that handle the drawing on the canvas.",
+            "is_constructor": 1
+        },
+        "inputs": {
+            "name": "inputs",
+            "shortname": "inputs",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/inputs.js",
+            "line": 1,
+            "description": "Handles keyboard and mouse inputs in the window and on the canvas.",
+            "is_constructor": 1
+        },
+        "main": {
+            "name": "main",
+            "shortname": "main",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/main.js",
+            "line": 1,
+            "description": "The simulation main loop.\n\nBased on the framework provided by Patrick Kerr in the\nComputer Game Programming Class, fall 2014.",
+            "is_constructor": 1
+        },
+        "render": {
+            "name": "render",
+            "shortname": "render",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/render.js",
+            "line": 1,
+            "description": "Main rendering wrapper.\n\nBased on the framework provided by Patrick Kerr in the\nComputer Game Programming Class, fall 2014.",
+            "is_constructor": 1
+        },
+        "update": {
+            "name": "update",
+            "shortname": "update",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/update.js",
+            "line": 1,
+            "description": "Main update wrapper.\n\nBased on the framework provided by Patrick Kerr in the\nComputer Game Programming Class, fall 2014.",
+            "is_constructor": 1
+        },
+        "util": {
+            "name": "util",
+            "shortname": "util",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/util.js",
+            "line": 1,
+            "description": "Utilities, used by all the system.",
             "is_constructor": 1
         }
     },
@@ -252,7 +494,7 @@
         {
             "file": "js/dataStructure/Edge.js",
             "line": 118,
-            "description": "Renders this Edge on the canvase\n\nPost: This edge has been rendered on the canvas",
+            "description": "Renders this Edge on the canvas\n\nPost: This edge has been rendered on the canvas",
             "itemtype": "method",
             "name": "render",
             "params": [
@@ -518,6 +760,1114 @@
                 }
             ],
             "class": "NFA"
+        },
+        {
+            "file": "js/dataStructure/SM.js",
+            "line": 18,
+            "description": "Generates a new state.\n\nPost: A new state has been generated.",
+            "itemtype": "method",
+            "name": "generateState",
+            "params": [
+                {
+                    "name": "cx",
+                    "description": "is the center x coordinate of the new state",
+                    "type": "Number"
+                },
+                {
+                    "name": "cy",
+                    "description": "is the center y coordinate of the new state",
+                    "type": "Number"
+                },
+                {
+                    "name": "name",
+                    "description": "is the name which the state is recognized by in the UI",
+                    "type": "String"
+                },
+                {
+                    "name": "start",
+                    "description": "indicates whether the state is a starting state",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "fin",
+                    "description": "indicates whether the state is a final state",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "SM"
+        },
+        {
+            "file": "js/dataStructure/SM.js",
+            "line": 49,
+            "description": "Generates a new edge.\n\nPost: A new edge has been generated.",
+            "itemtype": "method",
+            "name": "generateEdge",
+            "params": [
+                {
+                    "name": "fromState",
+                    "description": "is the state which the edge goes out from",
+                    "type": "State"
+                },
+                {
+                    "name": "toState",
+                    "description": "is the state which the edge goes to.",
+                    "type": "State"
+                },
+                {
+                    "name": "symbols",
+                    "description": "is an array of transition symbols on the edge.",
+                    "type": "Array"
+                }
+            ],
+            "class": "SM"
+        },
+        {
+            "file": "js/dataStructure/SM.js",
+            "line": 72,
+            "description": "Removes an Edge from the SM\n\nPost: The indicated Edge has been removed from this SM.",
+            "itemtype": "method",
+            "name": "removeEdge",
+            "params": [
+                {
+                    "name": "edge",
+                    "description": "is the Edge to remove from this SM",
+                    "type": "Edge"
+                }
+            ],
+            "class": "SM"
+        },
+        {
+            "file": "js/dataStructure/SM.js",
+            "line": 85,
+            "description": "Finds a state in this SM by it's id",
+            "itemtype": "method",
+            "name": "findState",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "is a unique id for a State in this SM.",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "The State in this SM identified by id, if\n                it's found, otherwise false.",
+                "type": "State"
+            },
+            "class": "SM"
+        },
+        {
+            "file": "js/dataStructure/SM.js",
+            "line": 100,
+            "description": "Finds a state by it's name",
+            "itemtype": "method",
+            "name": "findStateByName",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "is a name of a State in this SM",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The first State in this SM having the name\n                name found, otherwise false.",
+                "type": "State"
+            },
+            "class": "SM"
+        },
+        {
+            "file": "js/dataStructure/SM.js",
+            "line": 115,
+            "description": "Finds the starting state of this SM.",
+            "itemtype": "method",
+            "name": "findStartState",
+            "return": {
+                "description": "The starting state of this SM, if it's\n                found, otherwise false.",
+                "type": "State"
+            },
+            "class": "SM"
+        },
+        {
+            "file": "js/dataStructure/SM.js",
+            "line": 130,
+            "description": "Finds out if a symbol is in this SM's alphabet.",
+            "itemtype": "method",
+            "name": "symbolInAlphabet",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "is the symbol being searched for",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "true iiff the symbol is in this SM's alphabet.",
+                "type": "Boolean"
+            },
+            "class": "SM"
+        },
+        {
+            "file": "js/dataStructure/SM.js",
+            "line": 146,
+            "description": "Finds out if this SM contains a given State.",
+            "itemtype": "method",
+            "name": "hasState",
+            "params": [
+                {
+                    "name": "st",
+                    "description": "is a State",
+                    "type": "State"
+                }
+            ],
+            "return": {
+                "description": "true iiff the state is in this SM.",
+                "type": "Boolean"
+            },
+            "class": "SM"
+        },
+        {
+            "file": "js/dataStructure/Set.js",
+            "line": 14,
+            "description": "Adds an object this Set.\n\nPost: The object has been added to this Set, if it wasn't there already.",
+            "itemtype": "method",
+            "name": "add",
+            "params": [
+                {
+                    "name": "object",
+                    "description": "is an object of any kind.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Set"
+        },
+        {
+            "file": "js/dataStructure/Set.js",
+            "line": 29,
+            "description": "Removes an object from this Set.\n\nPost: The object has been remved to this Set.",
+            "itemtype": "method",
+            "name": "remove",
+            "params": [
+                {
+                    "name": "object",
+                    "description": "is an object of any kind.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Set"
+        },
+        {
+            "file": "js/dataStructure/Set.js",
+            "line": 42,
+            "description": "Indicates whether this Set contains a given object.",
+            "itemtype": "method",
+            "name": "containes",
+            "params": [
+                {
+                    "name": "object",
+                    "description": "is an object of any kind.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "true iiff this Set contains the given object.",
+                "type": "Boolean"
+            },
+            "class": "Set"
+        },
+        {
+            "file": "js/dataStructure/Set.js",
+            "line": 57,
+            "description": "Gets an object from this Set, by index.",
+            "itemtype": "method",
+            "name": "getObject",
+            "params": [
+                {
+                    "name": "index",
+                    "description": "is an an index in this Set.",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "The object at the given index.",
+                "type": "Object"
+            },
+            "class": "Set"
+        },
+        {
+            "file": "js/dataStructure/Set.js",
+            "line": 68,
+            "description": "Gets the length of this Set.",
+            "itemtype": "method",
+            "name": "length",
+            "return": {
+                "description": "The length of this Set.",
+                "type": "Number"
+            },
+            "class": "Set"
+        },
+        {
+            "file": "js/dataStructure/Set.js",
+            "line": 78,
+            "description": "Indicates whether this Set is empty.",
+            "itemtype": "method",
+            "name": "isEmpty",
+            "return": {
+                "description": "true iiff this set is empty.",
+                "type": "Boolean"
+            },
+            "class": "Set"
+        },
+        {
+            "file": "js/dataStructure/Set.js",
+            "line": 88,
+            "description": "Gets the index of an object in this Set.",
+            "itemtype": "method",
+            "name": "indexOf",
+            "params": [
+                {
+                    "name": "object",
+                    "description": "is an object of any kind.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "The index of the given object in this Set.",
+                "type": "Number"
+            },
+            "class": "Set"
+        },
+        {
+            "file": "js/dataStructure/State.js",
+            "line": 37,
+            "description": "Gets the first Edge found that's possible to move along in the\ntransition to the new State.",
+            "itemtype": "method",
+            "name": "psblTrans",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "is the symbol to compute the transitions for",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The Edge that's possible to move along in the\n                transition to the new State.",
+                "type": "State"
+            },
+            "class": "State"
+        },
+        {
+            "file": "js/dataStructure/State.js",
+            "line": 52,
+            "description": "Gets a Set of states that this State's outgoing edges lead to\nfor the given str.",
+            "itemtype": "method",
+            "name": "transition",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "is the symbol to compute the transitions for",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The states that this State's outgoing edges lead to\n               for the given str.",
+                "type": "Set"
+            },
+            "class": "State"
+        },
+        {
+            "file": "js/dataStructure/State.js",
+            "line": 71,
+            "description": "Gets the id of this State",
+            "itemtype": "method",
+            "name": "getId",
+            "return": {
+                "description": "The unique id of this State.",
+                "type": "Number"
+            },
+            "class": "State"
+        },
+        {
+            "file": "js/dataStructure/State.js",
+            "line": 81,
+            "description": "Indicates whether this State is the starting state of\nthe global SM.",
+            "itemtype": "method",
+            "name": "isStart",
+            "return": {
+                "description": "true iiff this State is the starting state\n                  of the global SM.",
+                "type": "Boolean"
+            },
+            "class": "State"
+        },
+        {
+            "file": "js/dataStructure/State.js",
+            "line": 93,
+            "description": "Indicates whether this State is the final state of\nthe global SM.",
+            "itemtype": "method",
+            "name": "isFin",
+            "return": {
+                "description": "true iiff this State is the final state\n                  of the global SM.",
+                "type": "Boolean"
+            },
+            "class": "State"
+        },
+        {
+            "file": "js/dataStructure/State.js",
+            "line": 105,
+            "description": "Updates the center coordinates of this State in the canvas.\n\nPost: The center coordinates of this State have been updated\n      in the canvas.",
+            "itemtype": "method",
+            "name": "updateCoords",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "is an x coordinate in the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "is an y coordinate in the canvas",
+                    "type": "Number"
+                }
+            ],
+            "class": "State"
+        },
+        {
+            "file": "js/dataStructure/State.js",
+            "line": 122,
+            "description": "Handles updating of the logic of this State.\n\nPost: The logic of this State has been updated.",
+            "itemtype": "method",
+            "name": "update",
+            "params": [
+                {
+                    "name": "du",
+                    "description": "is delta time from the last update",
+                    "type": "Number"
+                }
+            ],
+            "class": "State"
+        },
+        {
+            "file": "js/dataStructure/State.js",
+            "line": 136,
+            "description": "Renders this State on the canvas.\n\nPost: This State has been rendered on the canvas",
+            "itemtype": "method",
+            "name": "render",
+            "params": [
+                {
+                    "name": "ctx",
+                    "description": "is the canvas context",
+                    "type": "Object"
+                }
+            ],
+            "class": "State"
+        },
+        {
+            "file": "js/RouteCircle.js",
+            "line": 19,
+            "description": "Indicates whether this RouteCircle has any route points defined for it.",
+            "itemtype": "method",
+            "name": "isEmpty",
+            "return": {
+                "description": "true iiff this RouteCircle has any route circles\n                  defined for it.",
+                "type": "Boolean"
+            },
+            "class": "RouteCircle"
+        },
+        {
+            "file": "js/RouteCircle.js",
+            "line": 30,
+            "description": "Handles the updating of the logic for this RouteCircle.\n\nPost: The logic of this RouteCircle has been updated.",
+            "itemtype": "method",
+            "name": "update",
+            "params": [
+                {
+                    "name": "du",
+                    "description": "is delta time from the last update",
+                    "type": "Number"
+                }
+            ],
+            "class": "RouteCircle"
+        },
+        {
+            "file": "js/RouteCircle.js",
+            "line": 47,
+            "description": "Renders this RouteCircle on the canvas.\n\nPost: This RouteCircle has been rendered on the canvas.",
+            "itemtype": "method",
+            "name": "render",
+            "params": [
+                {
+                    "name": "ctx",
+                    "description": "is the canvas context.",
+                    "type": "Object"
+                }
+            ],
+            "class": "RouteCircle"
+        },
+        {
+            "file": "js/draw.js",
+            "line": 9,
+            "description": "Draws a state on the canvas.\n\nPost: A State has been drawn on the canvas.",
+            "itemtype": "method",
+            "name": "state",
+            "params": [
+                {
+                    "name": "ctx",
+                    "description": "is the canvas context",
+                    "type": "Object"
+                },
+                {
+                    "name": "x",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "r",
+                    "description": "is the radius of the State",
+                    "type": "Number"
+                },
+                {
+                    "name": "isSelected",
+                    "description": "indicates whether the State is selected with the mouse cursor",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "isStart",
+                    "description": "indicates whether it's a starting state",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "isFin",
+                    "description": "indicates whether it's a final state",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "draw"
+        },
+        {
+            "file": "js/draw.js",
+            "line": 62,
+            "description": "Draws an Edge on the canvas.\n\nPost: An Edge has been drawn on the canvas, having start coords\n      (x1, y1) and final coords (x2, y2).",
+            "itemtype": "method",
+            "name": "edge",
+            "params": [
+                {
+                    "name": "ctx",
+                    "description": "is the canvas context",
+                    "type": "Object"
+                },
+                {
+                    "name": "x1",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y1",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "x2",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y2",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                }
+            ],
+            "class": "draw"
+        },
+        {
+            "file": "js/draw.js",
+            "line": 84,
+            "description": "Prints letters on the canvas.\n\nPost: All symbols have been printed on the canvas, starting at x coords x.",
+            "itemtype": "method",
+            "name": "printLetters",
+            "params": [
+                {
+                    "name": "ctx",
+                    "description": "is the canvas context",
+                    "type": "Object"
+                },
+                {
+                    "name": "symbols",
+                    "description": "is an array of symbols",
+                    "type": "Array"
+                },
+                {
+                    "name": "x",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "type",
+                    "description": "is 'state' or 'edge'",
+                    "type": "String"
+                }
+            ],
+            "class": "draw"
+        },
+        {
+            "file": "js/draw.js",
+            "line": 109,
+            "description": "Draws a RouteCircle on the canvas\n\nPost: A RouteCircle has been drawn on the canvas.",
+            "itemtype": "method",
+            "name": "routeCircle",
+            "params": [
+                {
+                    "name": "ctx",
+                    "description": "is the canvas context",
+                    "type": "Object"
+                },
+                {
+                    "name": "x",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                }
+            ],
+            "class": "draw"
+        },
+        {
+            "file": "js/draw.js",
+            "line": 128,
+            "description": "Draws an arrow on the canvas\n\nPost: An arrow has been drawn on the canvas, having start coords\n      (x1, y1) and final coords (x2, y2).\n\nBorrowed from this tutorial:\nhttp://www.dbp-consulting.com/tutorials/canvas/CanvasArrow.html",
+            "itemtype": "method",
+            "name": "drawArrow",
+            "params": [
+                {
+                    "name": "ctx",
+                    "description": "is the canvas context",
+                    "type": "Object"
+                },
+                {
+                    "name": "x1",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y1",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "x2",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y2",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "style",
+                    "description": "is the type of head to draw",
+                    "type": "String"
+                },
+                {
+                    "name": "which",
+                    "description": "indicates which end gets the arrow",
+                    "type": "Number"
+                },
+                {
+                    "name": "angle",
+                    "description": "is the angle at which the arrow will be drawn",
+                    "type": "Number"
+                },
+                {
+                    "name": "d",
+                    "description": "is the length (distance) of the arrow",
+                    "type": "Number"
+                }
+            ],
+            "class": "draw"
+        },
+        {
+            "file": "js/draw.js",
+            "line": 218,
+            "description": "Draws an arrow head on the canvas\n\nPost: An arrow head has been drawn on the canvas.\n\nBorrowed from this tutorial:\nhttp://www.dbp-consulting.com/tutorials/canvas/CanvasArrow.html",
+            "itemtype": "method",
+            "name": "drawHead",
+            "params": [
+                {
+                    "name": "ctx",
+                    "description": "is the canvas context",
+                    "type": "Object"
+                },
+                {
+                    "name": "x0",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y0",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "x1",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y1",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "x2",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y2",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "style",
+                    "description": "is the type of head to draw",
+                    "type": "String"
+                }
+            ],
+            "class": "draw"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 15,
+            "itemtype": "method",
+            "name": "handleKeyDown",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 22,
+            "itemtype": "method",
+            "name": "handleKeyUp",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 29,
+            "itemtype": "method",
+            "name": "keyCode",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 36,
+            "itemtype": "method",
+            "name": "handleKeyDown",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 45,
+            "itemtype": "method",
+            "name": "updateMouseCoords",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 53,
+            "itemtype": "method",
+            "name": "handleClick",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 62,
+            "itemtype": "method",
+            "name": "handleDblKlick",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 71,
+            "itemtype": "method",
+            "name": "mouseDown",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 88,
+            "itemtype": "method",
+            "name": "mouseUp",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 104,
+            "itemtype": "method",
+            "name": "mouseMove",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 109,
+            "itemtype": "method",
+            "name": "evalHandle",
+            "class": "inputs"
+        },
+        {
+            "file": "js/inputs.js",
+            "line": 114,
+            "itemtype": "method",
+            "name": "combineStatesHandle",
+            "class": "inputs"
+        },
+        {
+            "file": "js/main.js",
+            "line": 15,
+            "itemtype": "method",
+            "name": "iter",
+            "class": "main"
+        },
+        {
+            "file": "js/main.js",
+            "line": 24,
+            "itemtype": "method",
+            "name": "_iterCore",
+            "class": "main"
+        },
+        {
+            "file": "js/main.js",
+            "line": 32,
+            "itemtype": "method",
+            "name": "_updateClocks",
+            "class": "main"
+        },
+        {
+            "file": "js/main.js",
+            "line": 43,
+            "itemtype": "method",
+            "name": "_requestNextIteration",
+            "class": "main"
+        },
+        {
+            "file": "js/main.js",
+            "line": 50,
+            "itemtype": "method",
+            "name": "init",
+            "class": "main"
+        },
+        {
+            "file": "js/main.js",
+            "line": 57,
+            "itemtype": "method",
+            "name": "mainIterFrame",
+            "class": "main"
+        },
+        {
+            "file": "js/render.js",
+            "line": 11,
+            "itemtype": "method",
+            "name": "render",
+            "class": "render"
+        },
+        {
+            "file": "js/update.js",
+            "line": 16,
+            "itemtype": "method",
+            "name": "update",
+            "class": "update"
+        },
+        {
+            "file": "js/util.js",
+            "line": 9,
+            "description": "Indicates whether an array contains a given value.\nDoes not work for Set.",
+            "itemtype": "method",
+            "name": "contains",
+            "params": [
+                {
+                    "name": "A",
+                    "description": "is an array of any object that's\n               comparable with ===",
+                    "type": "Array"
+                },
+                {
+                    "name": "i",
+                    "description": "is any object.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "true iiff A contains i",
+                "type": "Boolean"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 27,
+            "description": "Indicates whether an array is empty.",
+            "itemtype": "method",
+            "name": "isEmpty",
+            "params": [
+                {
+                    "name": "A",
+                    "description": "is an array of any object",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "true iiff A is nt empty",
+                "type": "Boolean"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 38,
+            "description": "Computes the square of x",
+            "itemtype": "method",
+            "name": "square",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "is an integer",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "x^2",
+                "type": "Number"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 47,
+            "description": "Computes the abs of x",
+            "itemtype": "method",
+            "name": "abs",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "is an integer",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "absolute value of x",
+                "type": "Number"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 58,
+            "description": "Computes squared distance between coordinates\n(x1, y1) and (x2, y2)",
+            "itemtype": "method",
+            "name": "distSq",
+            "params": [
+                {
+                    "name": "x1",
+                    "description": "is an x coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "y1",
+                    "description": "is an y coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "x2",
+                    "description": "is an x coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "y2",
+                    "description": "is an y coordinate",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "The squared distance between the coordinates.",
+                "type": "Number"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 73,
+            "description": "Indicates whether the mouse cursor is inside a State,\nhaving center coords (cx, cy) and radius rad.",
+            "itemtype": "method",
+            "name": "inCircle",
+            "params": [
+                {
+                    "name": "mouseX",
+                    "description": "is a valid x coordinate on the window",
+                    "type": "Number"
+                },
+                {
+                    "name": "mouseY",
+                    "description": "is a valid y coordinate on the window",
+                    "type": "Number"
+                },
+                {
+                    "name": "cx",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "cy",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "rad",
+                    "description": "is the radius of the circle.",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "true iiff mouse cursor in circle",
+                "type": "Boolean"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 91,
+            "description": "Indicates whether a chr is whitespace",
+            "itemtype": "method",
+            "name": "inCircle",
+            "return": {
+                "description": "true iiff chr is whitespace",
+                "type": "Boolean"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 101,
+            "description": "Extracts symbols (characters) from a string",
+            "itemtype": "method",
+            "name": "extractSymbols",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "is a string",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The characters that make up str.",
+                "type": "Array"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 123,
+            "description": "Computes the union of two sets.",
+            "itemtype": "method",
+            "name": "union",
+            "params": [
+                {
+                    "name": "set1",
+                    "description": "",
+                    "type": "Set"
+                },
+                {
+                    "name": "set2",
+                    "description": "",
+                    "type": "Set"
+                }
+            ],
+            "return": {
+                "description": "The set union of set1 and set2",
+                "type": "Set"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 140,
+            "description": "Computes the intersection of two sets.",
+            "itemtype": "method",
+            "name": "intersect",
+            "params": [
+                {
+                    "name": "set1",
+                    "description": "",
+                    "type": "Set"
+                },
+                {
+                    "name": "set2",
+                    "description": "",
+                    "type": "Set"
+                }
+            ],
+            "return": {
+                "description": "The set intersection of set1 and set2",
+                "type": "Set"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 161,
+            "description": "Indicates whether two sets are intersecting.",
+            "itemtype": "method",
+            "name": "areIntersecting",
+            "params": [
+                {
+                    "name": "set1",
+                    "description": "",
+                    "type": "Set"
+                },
+                {
+                    "name": "set2",
+                    "description": "",
+                    "type": "Set"
+                }
+            ],
+            "return": {
+                "description": "true iiff set1 and set2 are intersecting.",
+                "type": "Boolean"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 173,
+            "description": "Computes the size/length of an object.",
+            "itemtype": "method",
+            "name": "objSize",
+            "params": [
+                {
+                    "name": "obj",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Size/length of obj.",
+                "type": "Number"
+            },
+            "class": "util"
+        },
+        {
+            "file": "js/util.js",
+            "line": 188,
+            "itemtype": "method",
+            "name": "hasUnmarkedStateSet",
+            "class": "util"
         }
     ],
     "warnings": []
