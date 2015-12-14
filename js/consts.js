@@ -1,3 +1,9 @@
+/**
+* Constants that are used in the system. 
+*
+* @class consts
+* @constructor
+*/
 var consts = {
     EPSILON : 'epsilon',
 

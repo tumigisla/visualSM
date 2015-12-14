@@ -1,5 +1,25 @@
+/**
+* Drawing methods that handle the drawing on the canvas.
+*
+* @class draw
+* @constructor
+*/
 var draw = {
 
+    /**
+    * Draws a state on the canvas.
+    *
+    * Post: A State has been drawn on the canvas.
+    *
+    * @method state
+    * @param {Object} ctx is the canvas context
+    * @param {Number} x is an x coordinate on the canvas
+    * @param {Number} y is an y coordinate on the canvas
+    * @param {Number} r is the radius of the State
+    * @param {Boolean} isSelected indicates whether the State is selected with the mouse cursor
+    * @param {Boolean} isStart indicates whether it's a starting state 
+    * @param {Boolean} isFin indicates whether it's a final state
+    */
     state : function(ctx, x, y, r, isSelected, isStart, isFin) {
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -39,6 +59,19 @@ var draw = {
     edgeX1 : 0,
     edgeY1 : 0,
 
+    /**
+    * Draws an Edge on the canvas.
+    *
+    * Post: An Edge has been drawn on the canvas, having start coords
+    *       (x1, y1) and final coords (x2, y2).
+    *
+    * @method edge
+    * @param {Object} ctx is the canvas context
+    * @param {Number} x1 is an x coordinate on the canvas
+    * @param {Number} y1 is an y coordinate on the canvas
+    * @param {Number} x2 is an x coordinate on the canvas
+    * @param {Number} y2 is an y coordinate on the canvas
+    */
     edge : function(ctx, x1, y1, x2, y2) {
         var dy = y2 - y1,
             dx = x2 - x1;
@@ -48,8 +81,18 @@ var draw = {
         this.drawArrow(ctx, x1, y1, x2, y2, 3, 1, undefined, 20); // use default angle
     },
 
-    // Pre : type is the string 'state' or 'edge'
-    // Post : All symbols have been printed starting at x.
+    /**
+    * Prints letters on the canvas.
+    *
+    * Post: All symbols have been printed on the canvas, starting at x coords x.
+    *
+    * @method printLetters
+    * @param {Object} ctx is the canvas context
+    * @param {Array} symbols is an array of symbols
+    * @param {Number} x is an x coordinate on the canvas
+    * @param {Number} y is an y coordinate on the canvas
+    * @param {String} type is 'state' or 'edge'
+    */
     printLetters : function(ctx, symbols, x, y, type) {
         if (type !== 'state' && type !== 'edge') return;
         ctx.font = type === 'state' ? 'bold 25px Arial' : 'bold 15px Arial';
@@ -63,6 +106,16 @@ var draw = {
         }
     },
 
+    /**
+    * Draws a RouteCircle on the canvas
+    *
+    * Post: A RouteCircle has been drawn on the canvas.
+    *
+    * @method routeCircle
+    * @param {Object} ctx is the canvas context
+    * @param {Number} x is an x coordinate on the canvas
+    * @param {Number} y is an y coordinate on the canvas
+    */
     routeCircle : function(ctx, x, y) {
         ctx.beginPath();
         ctx.arc(x, y, 8, 0, Math.PI * 2);
@@ -72,7 +125,26 @@ var draw = {
         ctx.closePath();
     },
 
-    // From: http://www.dbp-consulting.com/tutorials/canvas/CanvasArrow.html
+    /**
+    * Draws an arrow on the canvas
+    *
+    * Post: An arrow has been drawn on the canvas, having start coords
+    *       (x1, y1) and final coords (x2, y2).
+    *
+    * Borrowed from this tutorial:
+    * http://www.dbp-consulting.com/tutorials/canvas/CanvasArrow.html
+    *
+    * @method drawArrow
+    * @param {Object} ctx is the canvas context
+    * @param {Number} x1 is an x coordinate on the canvas
+    * @param {Number} y1 is an y coordinate on the canvas
+    * @param {Number} x2 is an x coordinate on the canvas
+    * @param {Number} y2 is an y coordinate on the canvas
+    * @param {String} style is the type of head to draw
+    * @param {Number} which indicates which end gets the arrow 
+    * @param {Number} angle is the angle at which the arrow will be drawn
+    * @param {Number} d is the length (distance) of the arrow 
+    */
     drawArrow : function(ctx,x1,y1,x2,y2,style,which,angle,d)
     {
       'use strict';
@@ -123,7 +195,7 @@ var draw = {
       // h is the line length of a side of the arrow head
       var h=Math.abs(d/Math.cos(angle));
 
-      if(which&1){	// handle far end arrow head
+      if(which&1){  // handle far end arrow head
         var angle1=lineangle+Math.PI+angle;
         var topx=x2+Math.cos(angle1)*h;
         var topy=y2+Math.sin(angle1)*h;
@@ -143,6 +215,24 @@ var draw = {
       }
   },
 
+  /**
+    * Draws an arrow head on the canvas
+    *
+    * Post: An arrow head has been drawn on the canvas.
+    *
+    * Borrowed from this tutorial:
+    * http://www.dbp-consulting.com/tutorials/canvas/CanvasArrow.html
+    *
+    * @method drawHead
+    * @param {Object} ctx is the canvas context
+    * @param {Number} x0 is an x coordinate on the canvas
+    * @param {Number} y0 is an y coordinate on the canvas
+    * @param {Number} x1 is an x coordinate on the canvas
+    * @param {Number} y1 is an y coordinate on the canvas
+    * @param {Number} x2 is an x coordinate on the canvas
+    * @param {Number} y2 is an y coordinate on the canvas
+    * @param {String} style is the type of head to draw
+    */
   drawHead : function(ctx,x0,y0,x1,y1,x2,y2,style)
   {
       'use strict';
@@ -193,26 +283,26 @@ var draw = {
           var cp1x, cp1y, cp2x, cp2y,backdist;
           var shiftamt=5;
           if(x2==x0){
-    	// Avoid a divide by zero if x2==x0
-    	backdist=y2-y0;
-    	cp1x=(x1+x0)/2;
-    	cp2x=(x1+x0)/2;
-    	cp1y=y1+backdist/shiftamt;
-    	cp2y=y1-backdist/shiftamt;
+      // Avoid a divide by zero if x2==x0
+      backdist=y2-y0;
+      cp1x=(x1+x0)/2;
+      cp2x=(x1+x0)/2;
+      cp1y=y1+backdist/shiftamt;
+      cp2y=y1-backdist/shiftamt;
           }else{
-    	backdist=Math.sqrt(((x2-x0)*(x2-x0))+((y2-y0)*(y2-y0)));
-    	var xback=(x0+x2)/2;
-    	var yback=(y0+y2)/2;
-    	var xmid=(xback+x1)/2;
-    	var ymid=(yback+y1)/2;
+      backdist=Math.sqrt(((x2-x0)*(x2-x0))+((y2-y0)*(y2-y0)));
+      var xback=(x0+x2)/2;
+      var yback=(y0+y2)/2;
+      var xmid=(xback+x1)/2;
+      var ymid=(yback+y1)/2;
 
-    	var m=(y2-y0)/(x2-x0);
-    	var dx=(backdist/(2*Math.sqrt(m*m+1)))/shiftamt;
-    	var dy=m*dx;
-    	cp1x=xmid-dx;
-    	cp1y=ymid-dy;
-    	cp2x=xmid+dx;
-    	cp2y=ymid+dy;
+      var m=(y2-y0)/(x2-x0);
+      var dx=(backdist/(2*Math.sqrt(m*m+1)))/shiftamt;
+      var dy=m*dx;
+      cp1x=xmid-dx;
+      cp1y=ymid-dy;
+      cp2x=xmid+dx;
+      cp2y=ymid+dy;
           }
 
           ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x0,y0);
@@ -221,5 +311,4 @@ var draw = {
       }
       ctx.restore();
     }
-
 };

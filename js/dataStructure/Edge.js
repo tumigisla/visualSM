@@ -116,7 +116,7 @@ Edge.prototype.update = function(du) {
 };
 
 /**
-* Renders this Edge on the canvase
+* Renders this Edge on the canvas
 *
 * Post: This edge has been rendered on the canvas
 *

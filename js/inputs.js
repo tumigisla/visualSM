@@ -1,3 +1,9 @@
+/**
+* Handles keyboard and mouse inputs in the window and on the canvas.
+*
+* @class inputs
+* @constructor
+*/
 var inputs = {
 
     keys : [],
@@ -6,6 +12,14 @@ var inputs = {
     // Y : mouseY
     mouse : {X : 0, Y : 0},
 
+    /**
+    * Removes an object from this Set.
+    *
+    * Post: The object has been remved to this Set.
+    *
+    * @method remove
+    * @param {Object} object is an object of any kind.
+    */
     handleKeyDown : function(e) {
         this.keys[e.keyCode] = true;
     },
