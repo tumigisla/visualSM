@@ -14,7 +14,8 @@ YUI.add("yuidoc-meta", function(Y) {
         "main",
         "render",
         "update",
-        "util"
+        "util",
+        "visualSM"
     ],
     "modules": [],
     "allModules": [],

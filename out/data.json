@@ -126,6 +126,15 @@
             },
             "fors": {},
             "namespaces": {}
+        },
+        "js/visualSM.js": {
+            "name": "js/visualSM.js",
+            "modules": {},
+            "classes": {
+                "visualSM": 1
+            },
+            "fors": {},
+            "namespaces": {}
         }
     },
     "modules": {},
@@ -310,6 +319,19 @@
             "file": "js/util.js",
             "line": 1,
             "description": "Utilities, used by all the system.",
+            "is_constructor": 1
+        },
+        "visualSM": {
+            "name": "visualSM",
+            "shortname": "visualSM",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "js/visualSM.js",
+            "line": 11,
+            "description": "The visualization part of the SM",
             "is_constructor": 1
         }
     },
@@ -1868,6 +1890,201 @@
             "itemtype": "method",
             "name": "hasUnmarkedStateSet",
             "class": "util"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 19,
+            "description": "Updates the alphabet with the symbols that are not in the\nalphaet already.\n\nPost: The alphabet has been updated if the intersection of\n      symbols and the alphabet contained fewer elements than symbols.",
+            "itemtype": "method",
+            "name": "maybeUpdateAlphabet",
+            "params": [
+                {
+                    "name": "symbols",
+                    "description": "is an Array of strings",
+                    "type": "Array"
+                }
+            ],
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 36,
+            "description": "Finds the state that's in range with the current mouse coords.",
+            "itemtype": "method",
+            "name": "findStateInRange",
+            "params": [
+                {
+                    "name": "mouseX",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "mouseY",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "The state that's in range.",
+                "type": "State"
+            },
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 53,
+            "description": "Finds the state that the mouse cursor is inside.",
+            "itemtype": "method",
+            "name": "insideState",
+            "params": [
+                {
+                    "name": "mouseX",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "mouseY",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "The state that the mouse cursor is inside.",
+                "type": "State"
+            },
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 69,
+            "description": "Moves the state that the mouse cursor is inside of\nto the new mouse coords.\n\nPost: A state has been moved if the mouse cursor was inside of one.",
+            "itemtype": "method",
+            "name": "maybeMoveState",
+            "params": [
+                {
+                    "name": "mouseX",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "mouseY",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                }
+            ],
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 87,
+            "description": "Inserts a new State to the global SM.\n\nPost: A new state having center pos (cx, cy) has been added to g_SM.",
+            "itemtype": "method",
+            "name": "insertState",
+            "params": [
+                {
+                    "name": "cx",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "cy",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                }
+            ],
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 104,
+            "description": "Starts a drawing path for a new Edge, having center coords (x, y)",
+            "itemtype": "method",
+            "name": "prepareEdge",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                }
+            ],
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 120,
+            "description": "Inserts a new Edge to the global SM",
+            "itemtype": "method",
+            "name": "insertEdge",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "is an x coordinate on the canvas",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "is an y coordinate on the canvas",
+                    "type": "Number"
+                }
+            ],
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 150,
+            "description": "Prompts the user for attributes to add to components on the canvas.",
+            "itemtype": "method",
+            "name": "addAttr",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "is the type of component to add attributes to.",
+                    "type": "String"
+                }
+            ],
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 191,
+            "description": "Prompts the user for attributes to add to components on the canvas.",
+            "itemtype": "method",
+            "name": "addAttr",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "is the type of component to add attributes to.",
+                    "type": "String"
+                }
+            ],
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 218,
+            "description": "Prompts the user for a string to evaluate and starts the evaluation of it.",
+            "itemtype": "method",
+            "name": "evaluate",
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 238,
+            "itemtype": "method",
+            "name": "updateSimulation",
+            "class": "visualSM"
+        },
+        {
+            "file": "js/visualSM.js",
+            "line": 263,
+            "itemtype": "method",
+            "name": "renderSimulation",
+            "class": "visualSM"
         }
     ],
     "warnings": []

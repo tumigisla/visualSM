@@ -1,24 +1,31 @@
-    // Get handler for canvas and define the context
+// Get handler for canvas and define the context
 var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
 
-//var g_SM = new DFA(); // make this more general
 var g_SM = new NFA();
-
-//var g_routeCircles = [];
-
-//var routeCircle = new RouteCircle();
-
 var killRouteCircle = false;
+var g_isBuildingEdge = false;
 
 /////////////
 
+/**
+* The visualization part of the SM
+*
+* @class visualSM
+* @constructor
+*/
 var visualSM = {
 
-    // Pre : symbols is an array of strings
-    // Post : Symbols from the symbols array that were
-    //        previously not in this SM alphabet have
-    //        been added to the alphabet.
+    /**
+    * Updates the alphabet with the symbols that are not in the
+    * alphaet already.
+    *
+    * Post: The alphabet has been updated if the intersection of
+    *       symbols and the alphabet contained fewer elements than symbols.
+    *
+    * @method maybeUpdateAlphabet
+    * @param {Array} symbols is an Array of strings
+    */
     maybeUpdateAlphabet : function(symbols) {
         for (var i = 0; i < symbols.length; i++) {
             var inAlphabet = util.contains(g_SM.alphabet, symbols[i]);
@@ -26,9 +33,14 @@ var visualSM = {
         }
     },
 
-    // Returns the state object of the state
-    // that's close enough to the current mouse
-    // coordinates.
+    /**
+    * Finds the state that's in range with the current mouse coords.
+    *
+    * @method findStateInRange
+    * @param {Number} mouseX is an x coordinate on the canvas
+    * @param {Number} mouseY is an y coordinate on the canvas
+    * @return {State} The state that's in range.
+    */
     findStateInRange : function(mouseX, mouseY) {
         for (var i = 0; i < g_SM._states.length; i++) {
             var st = g_SM._states[i];
@@ -38,7 +50,14 @@ var visualSM = {
         }
     },
 
-    // True if mouse cursor is inside the state.
+     /**
+    * Finds the state that the mouse cursor is inside.
+    *
+    * @method insideState
+    * @param {Number} mouseX is an x coordinate on the canvas
+    * @param {Number} mouseY is an y coordinate on the canvas
+    * @return {State} The state that the mouse cursor is inside.
+    */
     insideState : function(mouseX, mouseY) {
         for (var i = 0; i < g_SM._states.length; i++) {
             var st = g_SM._states[i];
@@ -47,8 +66,16 @@ var visualSM = {
         }
     },
 
-    // If the mouse cursor is insede a state,
-    // move state to the current mouseX and mouseY coords.
+    /**
+    * Moves the state that the mouse cursor is inside of
+    * to the new mouse coords.
+    *
+    * Post: A state has been moved if the mouse cursor was inside of one.
+    *
+    * @method maybeMoveState
+    * @param {Number} mouseX is an x coordinate on the canvas
+    * @param {Number} mouseY is an y coordinate on the canvas
+    */
     maybeMoveState : function(mouseX, mouseY) {
         var maybeState = visualSM.insideState(inputs.mouse.X, inputs.mouse.Y);
         if (maybeState) {
@@ -57,10 +84,15 @@ var visualSM = {
         }
     },
 
-    // Pre : cx and cy are canvas coords.
-    // Post : A new state with pos (cx, cy)
-    //        has been added to g_SM and
-    //        drawn to the canvas.
+     /**
+    * Inserts a new State to the global SM.
+    *
+    * Post: A new state having center pos (cx, cy) has been added to g_SM.
+    *
+    * @method insertState
+    * @param {Number} cx is an x coordinate on the canvas
+    * @param {Number} cy is an y coordinate on the canvas
+    */
     insertState : function(cx, cy) {
         var attr = this.addAttr('state'); // name, isStart, isFin
         g_SM.generateState(cx, cy, attr[0], attr[1], attr[2]);
@@ -69,10 +101,13 @@ var visualSM = {
         this.addToStats(newState);
     },
 
-    // Pre :  x and y are canvas coords.
-    // Post : A drawing path for a new Edge has
-    //        begun, and the starting point of that
-    //        Edge is (x, y).
+    /**
+    * Starts a drawing path for a new Edge, having center coords (x, y)
+    *
+    * @method prepareEdge
+    * @param {Number} x is an x coordinate on the canvas
+    * @param {Number} y is an y coordinate on the canvas
+    */
     prepareEdge : function(x, y) {
         var fromState = this.findStateInRange(x, y);
         g_SM.generateEdge(fromState);
@@ -82,12 +117,13 @@ var visualSM = {
         newEdge.updateStartCoords(clampCoords[0], clampCoords[1]);
     },
 
-    // Pre : x and y are canvas coords.
-    // Post : A drawing path for a new Edge has
-    //        ended, and the ending point of that
-    //        Edge is (x, y).
-    //        It's symbols are the output of the
-    //        prompt window.
+    /**
+    * Inserts a new Edge to the global SM
+    *
+    * @method insertEdge
+    * @param {Number} x is an x coordinate on the canvas
+    * @param {Number} y is an y coordinate on the canvas
+    */
     insertEdge : function(x, y) {
         var toState = this.findStateInRange(x, y);
 
@@ -111,12 +147,14 @@ var visualSM = {
             g_SM.removeEdge(newEdge);
      },
 
-    // Give attributes to state/edge.
-    // A prompt window with a text input
-    // pops up.
-    // Pre : type is a String and has to be either
-    //       'state' or 'edge'.
+    /**
+    * Prompts the user for attributes to add to components on the canvas.
+    *
+    * @method addAttr
+    * @param {String} type is the type of component to add attributes to.
+    */
     addAttr : function(type) {
+        /*
         if (type === 'state') {
             $('#stateModal').modal('show');
             return;
@@ -129,13 +167,14 @@ var visualSM = {
             $('#evalStringModal').modal('show');
             return;
         }
-
-
-        if (type === 'state') {
+        */
+            
+         if (type === 'state') {
             var attr = prompt(type + 'Name isStart isFinal');
             attr = util.extractSymbols(attr);
             attr[1] = attr[1] === 'true';
             attr[2] = attr[2] === 'true';
+            console.log(attr)
             return attr;
         }
         if (type === 'edge') {
@@ -149,11 +188,12 @@ var visualSM = {
         // TODO : deal with unnamed states or unnamed edges (empty string).
     },
 
-    // Add stats about state or edge to html div
-    // next to the canvas.
-    // Pre : type is a String, either
-    //       'state' or 'edge'.
-    //       Entity is an object of state/edge.
+    /**
+    * Prompts the user for attributes to add to components on the canvas.
+    *
+    * @method addAttr
+    * @param {String} type is the type of component to add attributes to.
+    */
     addToStats : function(entity) {
         var listItem = document.createElement("li");
 
@@ -175,6 +215,11 @@ var visualSM = {
         element.appendChild(listItem);
     },
 
+    /**
+    * Prompts the user for a string to evaluate and starts the evaluation of it.
+    *
+    * @method evaluate
+    */
     evaluate : function() {
         var evalStr = this.addAttr('evalStr');
         //g_SM.evalString(evalStr); // for DFA evaluation
@@ -186,12 +231,13 @@ var visualSM = {
         */
     }
 
-    
-
 };
 
 ////////////
 
+/**
+* @method updateSimulation
+*/
 var updateSimulation = function(du) {
     var states = g_SM._states,
         edges = g_SM._edges;
@@ -214,8 +260,9 @@ var updateSimulation = function(du) {
     }
 };
 
-var g_isBuildingEdge = false;
-
+/**
+* @method renderSimulation
+*/
 var renderSimulation = function(ctx) {
     var states = g_SM._states,
         edges = g_SM._edges;
